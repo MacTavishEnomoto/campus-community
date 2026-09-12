@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Campus Community · 校园社区交互 Demo</title>
+<style>
+:root{
+  --brand:#5865F2;--brand2:#8B5CF6;
+  --grad:linear-gradient(135deg,#5865F2 0%,#7C6CF8 55%,#9F7CFA 100%);
+  --accent:#FF6B4A;--ink:#1C2030;--sub:#8A90A6;--bg:#F4F5FB;
+  --card:#fff;--line:#EDEFF5;--red:#FF4D4F;--green:#22C55E;
+}
+*{margin:0;padding:0;box-sizing:border-box;font-family:"PingFang SC","Microsoft YaHei",system-ui,-apple-system,sans-serif}
+button{font-family:inherit}
+html,body{min-height:100%}
+body{background:linear-gradient(160deg,#F0F3FF 0%,#F7F4FF 55%,#FDF2F8 100%);overflow-x:hidden;color:var(--ink)}
+.bg-blob{position:fixed;border-radius:50%;filter:blur(90px);opacity:.55;z-index:0;pointer-events:none}
+.b1{width:480px;height:480px;background:#C7D2FE;top:-140px;left:-100px}
+.b2{width:520px;height:520px;background:#E9D5FF;bottom:-180px;right:-120px}
+
+.stage{position:relative;z-index:1;max-width:1160px;margin:0 auto;padding:52px 24px 60px;display:flex;gap:60px;justify-content:center;align-items:center;flex-wrap:wrap}
+@keyframes rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+.intro{max-width:430px;animation:rise .6s ease both}
+.brand-row{display:flex;align-items:center;gap:14px}
+.logo{width:56px;height:56px;border-radius:17px;background:var(--grad);display:grid;place-items:center;font-size:29px;box-shadow:0 12px 28px rgba(88,101,242,.35)}
+.intro h1{font-size:29px;letter-spacing:.3px}
+.vchip{display:inline-block;margin-left:8px;vertical-align:3px;background:#EEF0FF;color:#5865F2;font-size:11px;font-weight:700;padding:3px 9px;border-radius:999px}
+.tagline{margin-top:18px;font-size:17px;font-weight:700;color:#3A3F55}
+.desc{margin-top:10px;font-size:13.5px;line-height:1.85;color:#69708C}
+.mod-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+.mchip{padding:7px 13px;background:#fff;border:1px solid #E4E7F5;border-radius:999px;font-size:12.5px;color:#4A5070;box-shadow:0 2px 6px rgba(28,32,48,.04)}
+.mchip.plan{color:#AAB0C6;border-style:dashed;background:transparent}
+.stats{display:flex;gap:12px;margin-top:22px}
+.stat{flex:1;background:#fff;border-radius:16px;padding:14px 8px;text-align:center;box-shadow:0 8px 22px rgba(28,32,48,.05)}
+.stat b{font-size:23px;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.stat span{display:block;font-size:11.5px;color:#8A90A6;margin-top:3px}
+.flow{margin-top:20px;background:#fff;border-radius:16px;padding:15px 16px;box-shadow:0 8px 22px rgba(28,32,48,.05)}
+.flow h4{font-size:13px;color:#3A3F55;margin-bottom:10px}
+.fsteps{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.fstep{background:#F1F3FE;color:#5865F2;font-size:12px;padding:5px 10px;border-radius:8px;font-weight:600}
+.farr{color:#C3C9E8;font-size:12px}
+.hint{margin-top:20px;padding:13px 15px;border-radius:14px;background:linear-gradient(135deg,#FFF7ED,#FDF2F8);border:1px dashed #F0C7A8;font-size:12.5px;color:#9A6B4F;line-height:1.8}
+.footer-note{margin-top:24px;font-size:11.5px;color:#A6ACC4}
+
+/* ============ 手机 ============ */
+.device-area{animation:rise .6s .12s ease both}
+.phone{position:relative;width:398px;height:840px;padding:11px;background:#10142A;border-radius:56px;box-shadow:0 44px 90px rgba(60,70,140,.30),0 12px 30px rgba(60,70,140,.18)}
+.phone::before{content:"";position:absolute;left:-4px;top:172px;width:4px;height:96px;background:#2A2F4A;border-radius:4px 0 0 4px}
+.phone::after{content:"";position:absolute;right:-4px;top:216px;width:4px;height:66px;background:#2A2F4A;border-radius:0 4px 4px 0}
+.wrap{position:relative;width:100%;height:100%;border-radius:45px;overflow:hidden;background:var(--bg)}
+.island{position:absolute;top:12px;left:50%;transform:translateX(-50%);width:110px;height:28px;background:#0F1222;border-radius:18px;z-index:70}
+.statusbar{position:absolute;top:0;left:0;right:0;height:46px;display:flex;justify-content:space-between;align-items:center;padding:8px 26px 0;z-index:65;color:#fff;font-size:14.5px;font-weight:700;pointer-events:none}
+.sicons{display:flex;gap:6px;align-items:center}
+
+.screen{position:absolute;inset:0;overflow-y:auto;padding-bottom:104px;opacity:0;pointer-events:none;transform:translateY(10px);transition:opacity .28s ease,transform .28s ease;scrollbar-width:none}
+.screen::-webkit-scrollbar{display:none}
+.screen.active{opacity:1;pointer-events:auto;transform:none}
+
+.app-head{position:sticky;top:0;z-index:40;background:var(--grad);color:#fff;padding:58px 16px 15px;border-radius:0 0 26px 26px}
+.htitle{font-size:20px;font-weight:800}
+.hsub{font-size:11.5px;opacity:.85;margin-top:3px}
+.home-head .hrow1{display:flex;align-items:center;gap:10px}
+.loc{background:rgba(255,255,255,.18);border:none;color:#fff;font-size:13px;font-weight:600;padding:7px 12px;border-radius:999px;display:flex;align-items:center;gap:5px;cursor:pointer}
+.loc i{font-style:normal;font-size:10px;opacity:.8}
+.hbell{position:relative;margin-left:auto;background:rgba(255,255,255,.18);border:none;width:34px;height:34px;border-radius:50%;font-size:14px;cursor:pointer}
+.bdot2{position:absolute;top:5px;right:6px;width:8px;height:8px;background:#FF4D4F;border-radius:50%;border:1.5px solid #7B8AF8}
+.search{margin-top:12px;background:rgba(255,255,255,.22);border-radius:12px;padding:10px 14px;font-size:12.5px;color:rgba(255,255,255,.9)}
+
+/* 首页 */
+.qcard{margin:-30px 14px 0;background:#fff;border-radius:18px;padding:14px 6px 12px;display:grid;grid-template-columns:repeat(4,1fr);gap:12px 2px;box-shadow:0 10px 26px rgba(28,32,48,.06);position:relative;z-index:5}
+.qitem{background:none;border:none;text-align:center;cursor:pointer;font-size:11px;color:#4A5070}
+.qico{width:46px;height:46px;margin:0 auto 6px;border-radius:15px;display:grid;place-items:center;font-size:21px}
+.banner{margin:14px 14px 0;border-radius:16px;overflow:hidden;position:relative;height:98px;box-shadow:0 8px 22px rgba(28,32,48,.07)}
+.btrack{display:flex;height:100%;transition:transform .55s cubic-bezier(.3,.8,.3,1)}
+.bslide{min-width:100%;height:100%;padding:17px 18px;display:flex;flex-direction:column;justify-content:center;color:#fff;position:relative}
+.bslide b{font-size:16.5px}
+.bslide span{font-size:11.5px;opacity:.9;margin-top:5px}
+.bslide em{position:absolute;right:16px;top:50%;transform:translateY(-50%);font-style:normal;font-size:44px;opacity:.9}
+.bd1{background:linear-gradient(120deg,#6366F1,#8B5CF6)}
+.bd2{background:linear-gradient(120deg,#F97362,#F97BAF)}
+.bd3{background:linear-gradient(120deg,#0EA5A5,#22C58B)}
+.bdots{position:absolute;bottom:9px;right:14px;display:flex;gap:5px}
+.bdot{width:6px;height:6px;border-radius:3px;background:rgba(255,255,255,.5);transition:.3s}
+.bdot.on{width:16px;background:#fff}
+.sect{display:flex;justify-content:space-between;align-items:center;margin:18px 16px 10px}
+.sect h3{font-size:16px}
+.more{font-size:12px;color:#9AA0B5;cursor:pointer}
+.hrow{display:flex;gap:10px;overflow-x:auto;padding:2px 14px 6px;scrollbar-width:none}
+.hrow::-webkit-scrollbar{display:none}
+.hcard{min-width:128px;background:#fff;border-radius:14px;padding:8px;box-shadow:0 6px 18px rgba(28,32,48,.05);cursor:pointer}
+.himg{height:86px;border-radius:10px;display:grid;place-items:center;font-size:34px;position:relative}
+.htitle2{font-size:12px;font-weight:600;color:var(--ink);margin-top:7px;line-height:1.45;height:34px;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.segs{display:flex;gap:20px;margin:4px 16px 0;padding-bottom:10px}
+.seg{font-size:14px;color:#8A90A6;padding-bottom:6px;position:relative;cursor:pointer}
+.seg.on{color:var(--ink);font-weight:700}
+.seg.on::after{content:"";position:absolute;left:50%;transform:translateX(-50%);bottom:0;width:18px;height:3px;border-radius:2px;background:var(--grad)}
+#homeFeed{padding:0 14px;display:flex;flex-direction:column;gap:10px}
+
+/* 帖子卡片 */
+.post{background:#fff;border-radius:16px;padding:13px 14px;box-shadow:0 6px 18px rgba(28,32,48,.05);cursor:pointer}
+.prow{display:flex;align-items:center;gap:9px}
+.ava{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;font-size:18px;flex:none}
+.aa{background:linear-gradient(135deg,#FFD9C8,#FFB9A0)}
+.ab{background:linear-gradient(135deg,#C9DCFF,#A7C4FF)}
+.ac{background:linear-gradient(135deg,#DCC9FF,#C0A5FF)}
+.ad{background:linear-gradient(135deg,#FFC9DE,#FFA5C7)}
+.ae{background:linear-gradient(135deg,#C9F2DD,#9FE5C4)}
+.af{background:linear-gradient(135deg,#E8E8F2,#CFCFE0)}
+.pname{font-size:13px;font-weight:700;display:flex;align-items:center;gap:5px}
+.vbadge{width:14px;height:14px;border-radius:5px;background:var(--brand);color:#fff;font-size:9px;display:grid;place-items:center;flex:none}
+.pmeta{font-size:11px;color:#9AA0B5;margin-top:1px}
+.tagchip{margin-left:auto;font-size:10px;color:#5865F2;background:#EEF0FF;padding:3px 8px;border-radius:6px;flex:none}
+.ptitle{font-size:14.5px;margin-top:9px;font-weight:700}
+.ptext{font-size:13px;color:#4A5070;line-height:1.65;margin-top:4px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.pimgs{display:flex;gap:6px;margin-top:9px}
+.pimg{width:96px;height:70px;border-radius:10px;display:grid;place-items:center;font-size:26px}
+.pfoot{display:flex;gap:18px;margin-top:10px;padding-top:9px;border-top:1px solid #F2F3F8}
+.pact{font-size:12px;color:#8A90A6;background:none;border:none;cursor:pointer}
+.pact.liked{color:var(--red);font-weight:700}
+
+/* 通用 chips */
+.chips{display:flex;gap:8px;overflow-x:auto;padding:12px 14px 4px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;padding:7px 14px;border-radius:999px;background:#fff;border:1px solid #E7E9F3;font-size:12.5px;color:#4A5070;cursor:pointer}
+.chip.on{background:var(--grad);color:#fff;border-color:transparent;font-weight:600;box-shadow:0 6px 14px rgba(88,101,242,.3)}
+
+/* 集市 */
+.sortrow{display:flex;gap:16px;padding:8px 16px 10px;font-size:12px;color:#8A90A6}
+.srt{cursor:pointer}
+.srt.on{color:#5865F2;font-weight:700}
+#marketGrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 14px}
+.prod{background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 6px 18px rgba(28,32,48,.05);cursor:pointer}
+.gimg{height:118px;display:grid;place-items:center;font-size:44px;position:relative}
+.cond{position:absolute;top:8px;left:8px;background:rgba(17,20,40,.55);color:#fff;font-size:10px;padding:2px 7px;border-radius:6px}
+.gfav{position:absolute;bottom:6px;right:8px;font-size:10px;color:#fff;background:rgba(17,20,40,.35);padding:2px 7px;border-radius:6px}
+.gbody{padding:9px 10px 11px}
+.gtitle{font-size:13px;font-weight:600;color:var(--ink);line-height:1.45;height:38px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.gprice{margin-top:6px;display:flex;align-items:baseline;gap:5px}
+.np{color:var(--red);font-size:17px;font-weight:800}
+.op{font-size:11px;color:#B3B8C9;text-decoration:line-through}
+.gschool{margin-top:6px;font-size:10.5px;color:#8A90A6}
+
+/* 消息 */
+.irow{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin:-26px 14px 0;position:relative;background:#fff;border-radius:18px;padding:14px 6px 12px;box-shadow:0 10px 26px rgba(28,32,48,.06)}
+.itile{background:none;border:none;text-align:center;cursor:pointer;font-size:11px;color:#4A5070;position:relative}
+.iico{width:46px;height:46px;margin:0 auto 6px;border-radius:16px;display:grid;place-items:center;font-size:20px}
+.idot{position:absolute;top:-4px;right:calc(50% - 26px);background:var(--red);color:#fff;font-size:9px;min-width:15px;height:15px;border-radius:8px;display:grid;place-items:center;padding:0 4px}
+#chatList{margin:12px 14px 0;display:flex;flex-direction:column;gap:8px}
+.crow{display:flex;align-items:center;gap:11px;background:#fff;border-radius:14px;padding:11px 12px;box-shadow:0 4px 14px rgba(28,32,48,.04)}
+.cava{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;font-size:20px;flex:none}
+.cinfo{flex:1;min-width:0}
+.cname{font-size:13.5px;font-weight:600}
+.cprev{font-size:12px;color:#9AA0B5;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cmeta{display:flex;flex-direction:column;align-items:flex-end;gap:5px;flex:none}
+.ctime{font-size:10.5px;color:#B3B8C9}
+.cbadge{background:var(--red);color:#fff;font-size:10px;min-width:16px;height:16px;border-radius:8px;display:grid;place-items:center;padding:0 4px}
+.ctag{font-size:9.5px;color:#F59E0B;background:#FEF3C7;padding:2px 6px;border-radius:5px}
+
+/* 我的 */
+.me-head{position:sticky;top:0;z-index:40;background:var(--grad);color:#fff;padding:64px 18px 60px}
+.me-row{display:flex;align-items:center;gap:14px}
+.meava{width:64px;height:64px;border-radius:50%;background:#fff;display:grid;place-items:center;font-size:31px;border:3px solid rgba(255,255,255,.4);flex:none}
+.mename{font-size:19px;font-weight:800;display:flex;align-items:center;gap:7px}
+.okpill{font-size:10px;font-weight:700;color:#fff;background:rgba(255,255,255,.22);border:1px solid rgba(255,255,255,.4);padding:2px 8px;border-radius:999px}
+.mesub{font-size:12px;opacity:.88;margin-top:4px}
+.me-edit{margin-left:auto;width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.18);border:none;color:#fff;font-size:14px;cursor:pointer}
+.me-stats{margin:-40px 14px 0;background:#fff;border-radius:18px;display:flex;padding:14px 0;box-shadow:0 10px 26px rgba(28,32,48,.06);position:relative}
+.mst{flex:1;text-align:center}
+.mst b{font-size:17px}
+.mst span{display:block;font-size:11px;color:#8A90A6;margin-top:2px}
+.wallet{margin:12px 14px 0;background:linear-gradient(135deg,#2B2F55,#4A3F8F);border-radius:18px;padding:15px 16px;color:#fff}
+.wallet .wt{display:flex;justify-content:space-between;font-size:12.5px;font-weight:600}
+.wallet .wt span:last-child{opacity:.7;font-weight:400}
+.wcols{display:flex;margin-top:12px}
+.wcol{flex:1;text-align:center}
+.wcol b{font-size:16px;display:block}
+.wcol span{font-size:10.5px;opacity:.72;display:block;margin-top:2px}
+.ocard{margin:12px 14px 0;background:#fff;border-radius:18px;padding:14px 6px 12px;display:grid;grid-template-columns:repeat(4,1fr);box-shadow:0 6px 18px rgba(28,32,48,.05)}
+.oitem{background:none;border:none;text-align:center;cursor:pointer;font-size:11px;color:#4A5070;position:relative}
+.oico{width:40px;height:40px;margin:0 auto 6px;border-radius:14px;background:#F3F4FA;display:grid;place-items:center;font-size:18px}
+.ob{position:absolute;top:-4px;right:calc(50% - 24px);background:var(--red);color:#fff;font-size:9px;min-width:15px;height:15px;border-radius:8px;display:grid;place-items:center;padding:0 4px}
+.cert{margin:12px 14px 0;border-radius:16px;padding:13px 14px;background:linear-gradient(135deg,#ECFDF5,#D1FAE5);border:1px solid #A7F3D0;display:flex;gap:10px;align-items:center}
+.cert .ck{width:36px;height:36px;border-radius:50%;background:#fff;display:grid;place-items:center;font-size:17px;flex:none}
+.cert .ct b{font-size:13px;color:#065F46;display:block}
+.cert .ct span{font-size:11px;color:#047857;display:block;margin-top:2px}
+.cert .cright{margin-left:auto;font-size:10px;font-weight:700;color:#059669;background:#fff;padding:3px 9px;border-radius:999px;flex:none}
+.menu{margin:12px 14px 0;background:#fff;border-radius:18px;padding:2px 14px;box-shadow:0 6px 18px rgba(28,32,48,.05)}
+.mrow{display:flex;align-items:center;gap:12px;padding:12.5px 0;border-bottom:1px solid #F2F3F8;font-size:13.5px;color:#333A52;cursor:pointer}
+.mrow:last-child{border-bottom:none}
+.mico{width:30px;height:30px;border-radius:9px;background:#F3F4FA;display:grid;place-items:center;font-size:14px;flex:none}
+.mval{margin-left:auto;font-size:11.5px;color:#B3B8C9}
+.chev{color:#C9CDDD;font-size:14px;margin-left:6px}
+.ver{text-align:center;font-size:11px;color:#B3B8C9;padding:12px 0 4px}
+
+/* Tabbar / FAB */
+.tabbar{position:absolute;bottom:0;left:0;right:0;height:80px;background:rgba(255,255,255,.94);backdrop-filter:blur(14px);border-top:1px solid #EEF0F6;display:flex;z-index:60;padding-bottom:12px}
+.tbtn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;background:none;border:none;color:#9AA0B5;font-size:10.5px;cursor:pointer}
+.tbtn svg{width:23px;height:23px}
+.tbtn.on{color:var(--brand)}
+.tbtn.on svg{stroke-width:2.4}
+.tgap{flex:1}
+.fab{position:absolute;bottom:46px;left:50%;transform:translateX(-50%);width:52px;height:52px;border-radius:50%;background:var(--grad);color:#fff;font-size:28px;font-weight:300;border:4px solid #fff;box-shadow:0 10px 24px rgba(88,101,242,.45);z-index:61;cursor:pointer;display:grid;place-items:center;line-height:1;padding:0 0 3px}
+
+/* 详情弹层 */
+.sheet{position:absolute;inset:0;background:rgba(15,18,34,.45);opacity:0;pointer-events:none;transition:.25s;z-index:80}
+.sheet.open{opacity:1;pointer-events:auto}
+.sclose{position:absolute;top:16px;right:14px;width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.92);border:none;font-size:14px;color:#333;cursor:pointer;z-index:5;box-shadow:0 4px 12px rgba(0,0,0,.15);opacity:0;pointer-events:none;transition:.2s}
+.sheet.open .sclose{opacity:1;pointer-events:auto}
+.sheet-panel{position:absolute;left:0;right:0;bottom:0;top:64px;background:var(--bg);border-radius:28px 28px 0 0;transform:translateY(102%);transition:transform .34s cubic-bezier(.22,.9,.3,1);overflow:hidden}
+.sheet.open .sheet-panel{transform:none}
+#sheetBody{height:100%;overflow-y:auto;padding-bottom:90px;scrollbar-width:none}
+#sheetBody::-webkit-scrollbar{display:none}
+.dhero{height:225px;display:grid;place-items:center;position:relative}
+.dhero .cond{font-size:12px;padding:4px 10px;top:14px}
+.dbody{padding:16px 16px 8px}
+.gprice .dtag{margin-left:auto;font-size:10.5px;color:#16A34A;background:#ECFDF5;border:1px solid #BBF7D0;padding:3px 8px;border-radius:6px}
+.dtitle{font-size:16.5px;font-weight:800;margin-top:10px;line-height:1.5}
+.dtags{display:flex;gap:7px;margin-top:12px;flex-wrap:wrap}
+.dtags span{font-size:11px;color:#5865F2;background:#EEF0FF;padding:4px 9px;border-radius:7px}
+.dmeta{font-size:11.5px;color:#9AA0B5;margin-top:10px}
+.seller{display:flex;align-items:center;gap:10px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:11px;margin-top:14px}
+.mini{border:1px solid var(--line);background:#fff;font-size:12px;color:#4A5070;padding:7px 12px;border-radius:999px;cursor:pointer}
+.dsect{font-size:14px;font-weight:800;margin:18px 0 8px}
+.ddesc{font-size:13px;color:#4A5070;line-height:1.85}
+.cmt{display:flex;gap:9px;padding:12px 0;border-bottom:1px solid #F2F3F8}
+.cmt .ava{width:30px;height:30px;font-size:14px}
+.cmt .cn{font-size:12px;font-weight:700}
+.cmt .cx{font-size:13px;color:#333A52;margin-top:2px;line-height:1.6}
+.cmt .ct2{font-size:10.5px;color:#B3B8C9;margin-top:4px}
+.dbar{position:absolute;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--line);display:flex;align-items:center;gap:10px;padding:10px 14px 20px}
+.rnd{width:42px;height:42px;border-radius:50%;background:#F3F4FA;border:none;font-size:16px;cursor:pointer;flex:none}
+.buy{flex:1;height:44px;border-radius:22px;background:var(--grad);color:#fff;font-size:15px;font-weight:700;border:none;box-shadow:0 8px 20px rgba(88,101,242,.4);cursor:pointer}
+.cinput{flex:1;height:40px;background:#F3F4FA;border-radius:20px;display:flex;align-items:center;padding:0 14px;font-size:12.5px;color:#A6ACC4}
+.send{height:40px;padding:0 16px;border-radius:20px;background:var(--grad);color:#fff;border:none;font-size:13px;font-weight:600;cursor:pointer;flex:none}
+
+/* Toast */
+.toast{position:absolute;bottom:112px;left:50%;transform:translateX(-50%) translateY(8px);background:rgba(17,20,40,.88);color:#fff;font-size:12.5px;padding:9px 16px;border-radius:10px;opacity:0;pointer-events:none;transition:.25s;z-index:90;white-space:nowrap;max-width:88%;overflow:hidden;text-overflow:ellipsis}
+.toast.show{opacity:1;transform:translateX(-50%)}
+
+@media (max-width:1024px){
+  .stage{flex-direction:column;gap:40px;padding-top:36px}
+  .intro{max-width:560px}
+}
+@media (max-height:960px){
+  .stage{padding-top:30px;padding-bottom:40px}
+}
+</style>
+</head>
+<body>
+<div class="bg-blob b1"></div><div class="bg-blob b2"></div>
+
+<main class="stage">
+  <!-- ============ 左侧介绍 ============ -->
+  <aside class="intro">
+    <div class="brand-row">
+      <div class="logo">🎓</div>
+      <h1>Campus Community<span class="vchip">Demo v0.1</span></h1>
+    </div>
+    <p class="tagline">以高校为节点的跨校社区 × 二手交易平台</p>
+    <p class="desc">面向四川、云南高校学生，把校园论坛、树洞、表白墙、二手集市、失物招领、兼职拼车与校园活动装进同一个小程序。学校是核心组织单位，内容按「本校 → 同城 → 云川 → 全站」逐层流动。</p>
+    <div class="mod-chips">
+      <span class="mchip">校园论坛</span><span class="mchip">树洞</span><span class="mchip">表白墙</span>
+      <span class="mchip">问答</span><span class="mchip">二手集市</span><span class="mchip">失物招领</span>
+      <span class="mchip">兼职信息</span><span class="mchip">拼车拼单</span><span class="mchip">校园活动</span>
+      <span class="mchip plan">商家入驻 · 规划中</span><span class="mchip plan">广告系统 · 规划中</span>
+    </div>
+    <div class="stats">
+      <div class="stat"><b>2</b><span>覆盖省份</span></div>
+      <div class="stat"><b>12+</b><span>首批入驻高校</span></div>
+      <div class="stat"><b>8</b><span>MVP 核心模块</span></div>
+    </div>
+    <div class="flow">
+      <h4>MVP 核心闭环</h4>
+      <div class="fsteps">
+        <span class="fstep">注册</span><span class="farr">→</span>
+        <span class="fstep">浏览</span><span class="farr">→</span>
+        <span class="fstep">发布</span><span class="farr">→</span>
+        <span class="fstep">互动</span><span class="farr">→</span>
+        <span class="fstep">交易</span><span class="farr">→</span>
+        <span class="fstep">消息</span><span class="farr">→</span>
+        <span class="fstep">审核</span>
+      </div>
+    </div>
+    <div class="hint">👉 右侧手机为可交互原型：底部 Tab 切换页面 · 点击商品 / 帖子卡片查看详情 · 集市与社区支持分类筛选 · 首页可切换 推荐 / 本校 / 同城 / 云川 视角</div>
+    <p class="footer-note">四川 · 云南高校 | 第一阶段 MVP · 微信小程序形态 | Interactive Demo 2026</p>
+  </aside>
+
+  <!-- ============ 手机原型 ============ -->
+  <div class="device-area">
+    <div class="phone">
+      <div class="wrap">
+        <div class="island"></div>
+        <div class="statusbar">
+          <span id="clock">9:41</span>
+          <span class="sicons">
+            <svg width="18" height="12" viewBox="0 0 18 12" fill="currentColor"><rect x="0" y="7" width="3" height="5" rx="1"/><rect x="5" y="5" width="3" height="7" rx="1"/><rect x="10" y="2.5" width="3" height="9.5" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1" opacity=".35"/></svg>
+            <svg width="16" height="12" viewBox="0 0 16 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M1.5 4.5a9.2 9.2 0 0 1 13 0"/><path d="M3.8 7a6 6 0 0 1 8.4 0"/><path d="M6.1 9.4a2.8 2.8 0 0 1 3.8 0"/></svg>
+            <svg width="25" height="12" viewBox="0 0 25 12"><rect x=".8" y=".8" width="20" height="10.4" rx="3" fill="none" stroke="currentColor" opacity=".4"/><rect x="2.5" y="2.5" width="13" height="7" rx="1.6" fill="currentColor"/><path d="M23 4v4a2.2 2.2 0 0 0 0-4z" fill="currentColor" opacity=".4"/></svg>
+          </span>
+        </div>
+
+        <!-- 首页 -->
+        <section class="screen active" id="tab-home">
+          <header class="app-head home-head">
+            <div class="hrow1">
+              <button class="loc" onclick="toast('学校切换将在正式版开放 🏫')">🏫 四川大学 <i>▾</i></button>
+              <button class="hbell" onclick="toast('暂无新通知 🔔')">🔔<span class="bdot2"></span></button>
+            </div>
+            <div class="search">🔍 搜索帖子、二手好物、校园活动</div>
+          </header>
+          <div class="qcard" id="homeQ">
+            <button class="qitem" data-act="market"><span class="qico" style="background:#FFF0E2">🛍️</span>二手闲置</button>
+            <button class="qitem" data-act="community"><span class="qico" style="background:#E3F0FF">🔍</span>失物招领</button>
+            <button class="qitem"><span class="qico" style="background:#E7F7EC">💼</span>校园兼职</button>
+            <button class="qitem"><span class="qico" style="background:#E5F6FB">🚗</span>拼车同行</button>
+            <button class="qitem" data-act="community"><span class="qico" style="background:#FFE9F1">💌</span>表白墙</button>
+            <button class="qitem" data-act="community"><span class="qico" style="background:#E8F5EF">🌳</span>树洞</button>
+            <button class="qitem"><span class="qico" style="background:#F0E9FF">🎪</span>活动报名</button>
+            <button class="qitem"><span class="qico" style="background:#F1F2F6">⋯</span>更多</button>
+          </div>
+          <div class="banner">
+            <div class="btrack" id="btrack">
+              <div class="bslide bd1"><b>迎新季 · 校园二手好物节</b><span>好物低价流转 · 全场包邮中</span><em>🎒</em></div>
+              <div class="bslide bd2"><b>云川高校联合音乐节</b><span>12月 · 昆明 · 报名开启</span><em>🎸</em></div>
+              <div class="bslide bd3"><b>校园商家入驻</b><span>首月免佣金 · 精准触达学生客群</span><em>🏪</em></div>
+            </div>
+            <div class="bdots" id="bdots"><span class="bdot on"></span><span class="bdot"></span><span class="bdot"></span></div>
+          </div>
+          <div class="sect"><h3>热门闲置</h3><span class="more" onclick="switchTab('tab-market')">查看更多 ›</span></div>
+          <div class="hrow" id="hotRow"></div>
+          <div class="sect" style="margin-top:16px"><h3>校园动态</h3><span class="more" onclick="switchTab('tab-community')">去社区 ›</span></div>
+          <div class="segs" id="homeSegs">
+            <span class="seg on" data-scope="rec">推荐</span>
+            <span class="seg" data-scope="school">本校</span>
+            <span class="seg" data-scope="city">同城</span>
+            <span class="seg" data-scope="province">云川</span>
+          </div>
+          <div id="homeFeed"></div>
+        </section>
+
+        <!-- 社区 -->
+        <section class="screen" id="tab-community">
+          <header class="app-head">
+            <div class="htitle">社区</div>
+            <div class="hsub">川云高校 · 此刻 2.3 万人正在聊</div>
+          </header>
+          <div class="chips" id="communityChips">
+            <button class="chip on" data-tag="all">推荐</button>
+            <button class="chip" data-tag="life">校园生活</button>
+            <button class="chip" data-tag="hole">树洞</button>
+            <button class="chip" data-tag="wall">表白墙</button>
+            <button class="chip" data-tag="study">学习交流</button>
+            <button class="chip" data-tag="lost">失物招领</button>
+            <button class="chip" data-tag="sport">运动约战</button>
+            <button class="chip" data-tag="secondhand">二手闲置</button>
+            <button class="chip" data-tag="yun">云川高校</button>
+          </div>
+          <div id="communityFeed" style="padding:6px 14px 0;display:flex;flex-direction:column;gap:10px"></div>
+        </section>
+
+        <!-- 集市 -->
+        <section class="screen" id="tab-market">
+          <header class="app-head">
+            <div class="htitle">校园集市</div>
+            <div class="hsub">让闲置好物在校园里流动 ♻️</div>
+            <div class="search">🔍 搜索想要的宝贝</div>
+          </header>
+          <div class="chips" id="marketChips">
+            <button class="chip on" data-cat="all">全部</button>
+            <button class="chip" data-cat="digital">数码</button>
+            <button class="chip" data-cat="books">图书教材</button>
+            <button class="chip" data-cat="dorm">宿舍用品</button>
+            <button class="chip" data-cat="clothes">服装</button>
+            <button class="chip" data-cat="sports">运动</button>
+            <button class="chip" data-cat="other">其他</button>
+          </div>
+          <div class="sortrow">
+            <span class="srt on">综合排序</span><span class="srt">最新发布</span><span class="srt">价格最低</span><span class="srt">本校优先 ✅</span>
+          </div>
+          <div id="marketGrid"></div>
+          <div style="height:14px"></div>
+        </section>
+
+        <!-- 消息 -->
+        <section class="screen" id="tab-msg">
+          <header class="app-head">
+            <div class="htitle">消息</div>
+            <div class="hsub">互动 · 交易 · 系统通知</div>
+          </header>
+          <div class="irow">
+            <button class="itile" onclick="toast('12 条新的赞 ❤️')"><span class="iico" style="background:#FFE9EC">❤️</span><span class="idot">12</span>收到的赞</button>
+            <button class="itile" onclick="toast('5 条新的评论 💬')"><span class="iico" style="background:#E3F0FF">💬</span><span class="idot">5</span>评论</button>
+            <button class="itile" onclick="toast('3 条新的收藏 ⭐')"><span class="iico" style="background:#FFF3D6">⭐</span><span class="idot">3</span>收藏</button>
+            <button class="itile" onclick="toast('8 位新关注者 👥')"><span class="iico" style="background:#E7F7EC">👤</span><span class="idot">8</span>关注</button>
+          </div>
+          <div id="chatList">
+            <div class="crow"><div class="cava aa">🧑‍🎓</div><div class="cinfo"><div class="cname">学长小陈</div><div class="cprev">iPad 能便宜 50 吗？可以望江面交</div></div><div class="cmeta"><span class="ctime">14:32</span><span class="cbadge">2</span></div></div>
+            <div class="crow"><div class="cava ab">👥</div><div class="cinfo"><div class="cname">二手交流群 · 川大</div><div class="cprev">新人入群：学长学姐好呀～</div></div><div class="cmeta"><span class="ctime">13:05</span><span class="cbadge">5</span></div></div>
+            <div class="crow"><div class="cava ad">🎪</div><div class="cinfo"><div class="cname">动漫社招新小分队</div><div class="cprev">周六银杏大道摆摊，来两个人搬桌子！</div></div><div class="cmeta"><span class="ctime">11:48</span></div></div>
+            <div class="crow"><div class="cava ae">📦</div><div class="cinfo"><div class="cname">交易消息</div><div class="cprev">你发布的《考研数学全套资料》有新订单</div></div><div class="cmeta"><span class="ctime">昨天</span><span class="ctag">交易</span></div></div>
+            <div class="crow"><div class="cava ac">🔔</div><div class="cinfo"><div class="cname">系统通知</div><div class="cprev">审核通过：你的商品「小米台灯 Pro」已上架</div></div><div class="cmeta"><span class="ctime">昨天</span></div></div>
+            <div class="crow"><div class="cava af">💌</div><div class="cinfo"><div class="cname">表白墙管理员</div><div class="cprev">你投稿的内容已发布（匿名）</div></div><div class="cmeta"><span class="ctime">周五</span></div></div>
+          </div>
+        </section>
+
+        <!-- 我的 -->
+        <section class="screen" id="tab-me">
+          <header class="me-head">
+            <div class="me-row">
+              <div class="meava">🧑🏻‍💻</div>
+              <div>
+                <div class="mename">MacTavish <span class="okpill">已认证 ✓</span></div>
+                <div class="mesub">四川大学 · 计算机学院 2023级</div>
+              </div>
+              <button class="me-edit" onclick="toast('资料编辑将在正式版开放 ✏️')">›</button>
+            </div>
+          </header>
+          <div class="me-stats">
+            <div class="mst"><b>28</b><span>帖子</span></div>
+            <div class="mst"><b>12</b><span>好物</span></div>
+            <div class="mst"><b>156</b><span>关注</span></div>
+            <div class="mst"><b>89</b><span>粉丝</span></div>
+          </div>
+          <div class="wallet">
+            <div class="wt"><span>我的钱包</span><span>明细 ›</span></div>
+            <div class="wcols">
+              <div class="wcol"><b>¥128.50</b><span>余额</span></div>
+              <div class="wcol"><b>3</b><span>优惠券</span></div>
+              <div class="wcol"><b>420</b><span>校园积分</span></div>
+            </div>
+          </div>
+          <div class="ocard">
+            <button class="oitem" onclick="toast('待付款订单 1 笔')"><span class="oico">💳</span><span class="ob">1</span>待付款</button>
+            <button class="oitem" onclick="toast('待发货订单 2 笔')"><span class="oico">📦</span><span class="ob">2</span>待发货</button>
+            <button class="oitem" onclick="toast('待收货订单 1 笔')"><span class="oico">🚚</span><span class="ob">1</span>待收货</button>
+            <button class="oitem" onclick="toast('暂无售后订单')">↩️ 售后</button>
+          </div>
+          <div class="cert">
+            <div class="ck">✅</div>
+            <div class="ct"><b>校园认证已通过</b><span>四川大学 · 学籍信息已核验（2026.09 有效）</span></div>
+            <span class="cright">认证用户</span>
+          </div>
+          <div class="menu">
+            <div class="mrow" onclick="toast('我的帖子 28 篇')"><span class="mico">📝</span>我的帖子<span class="mval">28</span><span class="chev">›</span></div>
+            <div class="mrow" onclick="switchTab('tab-market')"><span class="mico">🛍️</span>我的商品<span class="mval">12</span><span class="chev">›</span></div>
+            <div class="mrow" onclick="toast('订单中心开发中')"><span class="mico">🧾</span>我的订单<span class="chev">›</span></div>
+            <div class="mrow" onclick="toast('收藏 56 条')"><span class="mico">⭐</span>我的收藏<span class="mval">56</span><span class="chev">›</span></div>
+            <div class="mrow" onclick="toast('浏览历史开发中')"><span class="mico">🕘</span>浏览历史<span class="chev">›</span></div>
+            <div class="mrow" onclick="toast('设置开发中')"><span class="mico">⚙️</span>设置<span class="chev">›</span></div>
+          </div>
+          <div class="ver">Campus Community v0.1.0 · Demo Build</div>
+        </section>
+
+        <!-- 详情弹层 -->
+        <div class="sheet" id="sheet">
+          <button class="sclose" onclick="closeSheet()">✕</button>
+          <div class="sheet-panel"><div id="sheetBody"></div></div>
+        </div>
+        <div class="toast" id="toast"></div>
+
+        <!-- Tabbar -->
+        <nav class="tabbar">
+          <button class="tbtn on" data-tab="tab-home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5 12 3l9 6.5V20a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/></svg>首页</button>
+          <button class="tbtn" data-tab="tab-community"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>社区</button>
+          <div class="tgap"></div>
+          <button class="tbtn" data-tab="tab-market"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>集市</button>
+          <button class="tbtn" data-tab="tab-msg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>消息</button>
+          <button class="tbtn" data-tab="tab-me"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>我的</button>
+        </nav>
+        <button class="fab" onclick="toast('发布功能将在正式版开放 ✍️')">＋</button>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+var $=function(s){return document.querySelector(s)},$$=function(s){return document.querySelectorAll(s)};
+
+/* 时钟 */
+function tick(){var d=new Date();$('#clock').textContent=('0'+d.getHours()).slice(-2)+':'+('0'+d.getMinutes()).slice(-2)}
+tick();setInterval(tick,10000);
+
+/* Tab 切换 */
+function switchTab(id){
+  $$('.tbtn').forEach(function(b){b.classList.toggle('on',b.dataset.tab===id)});
+  $$('.screen').forEach(function(s){s.classList.toggle('active',s.id===id)});
+}
+$$('.tbtn').forEach(function(b){b.addEventListener('click',function(){switchTab(b.dataset.tab)})});
+
+/* Toast */
+var tt;
+function toast(m){var t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(tt);tt=setTimeout(function(){t.classList.remove('show')},2200)}
+
+/* 数据 */
+var POSTS=[
+ {id:'t1',name:'林小满',emoji:'🌿',ac:'ab',v:true,school:'四川大学',time:'2小时前',scope:'school',tag:'life',tagname:'校园生活',title:'图书馆四楼靠窗的位置 yyds 📖',text:'傍晚的阳光洒进来的那一刻，感觉复习都变得浪漫了。期末周冲鸭，想要的都会有的！',imgs:[['📚','#FFE3C8','#FFC9A3'],['🌅','#CDE7FF','#A9D3FF']],like:234,com:56,fav:78,home:true,cmts:[['大表哥','四楼东南角才是风水宝地（小声）','1小时前'],['桃子','下次拼座！我带咖啡 ☕','32分钟前']]},
+ {id:'t2',name:'匿名同学',emoji:'🎭',ac:'af',v:false,school:'四川大学',time:'3小时前',scope:'school',tag:'hole',tagname:'树洞',title:'',text:'有没有想一起早起晨跑的同学？一个人真的坚持不下来😭 六点半桂操场，互相监督，跑完请豆浆！',like:45,com:32,fav:6,home:true,cmts:[['早八人','算我一个！但六点半真的起得来吗','2小时前'],['Vivi','建议改成七点，狗命要紧 😂','1小时前']]},
+ {id:'t3',name:'上岸的阿哲',emoji:'📝',ac:'ac',v:true,school:'电子科技大学',time:'5小时前',scope:'city',tag:'study',tagname:'学习交流',title:'四六级 + 考研资料大整理，免费领',text:'去年这个时候我也在疯狂刷题，把用过的真题、笔记和网课都整理好了，需要的同学来我主页或集市自取，祝大家都能上岸！',imgs:[['📚','#E9DBFF','#D2BCFF']],like:312,com:89,fav:156,home:true,cmts:[['考研人小张','资料已领，感谢学长！','20分钟前'],['冲鸭','码住，年底见','1小时前']]},
+ {id:'t4',name:'匿名同学',emoji:'💌',ac:'af',v:false,school:'西南财经大学',time:'昨天 22:41',scope:'city',tag:'wall',tagname:'表白墙',title:'',text:'想对每天晚上在光华操场跑步的白衣服男生说：你跑得很快，风也很大，但我记住你了。明天……能跑慢一点吗？',like:520,com:120,fav:45,home:false,cmts:[['吃瓜群众','磕到了，蹲后续！','3小时前'],['白衣男生','（已减速）','2小时前']]},
+ {id:'t5',name:'阿花在昆明',emoji:'🌸',ac:'ad',v:true,school:'云南大学',time:'昨天 18:05',scope:'province',tag:'yun',tagname:'云川高校',title:'云川高校联合音乐节，12月昆明见 🎸',text:'成都、绵阳的同学们可以拼高铁拼住宿啦，评论区组队，学生票半价，现场有川渝云高校乐队专场！',imgs:[['🎤','#FFD9E8','#FFB8D1'],['🎸','#D9F2E5','#B5E3CB']],like:666,com:233,fav:201,home:true,cmts:[['成都·小李','组队+1，求拼高铁','5小时前'],['昆明本地人','现场超好玩的，去年去过','8小时前']]},
+ {id:'t6',name:'球场老王',emoji:'🏀',ac:'ae',v:false,school:'西南财经大学',time:'2天前',scope:'city',tag:'sport',tagname:'运动约战',title:'周末光华球场缺 2 人打半场',text:'3v3 半场，水平不论快乐第一，来了就是兄弟，输的请喝水。',like:67,com:21,fav:3,home:false,cmts:[['灵活胖子','缺的是会打的（狗头）','1天前'],['路人甲','+1，我带水','1天前']]},
+ {id:'t7',name:'音乐节志愿者',emoji:'🎶',ac:'ad',v:false,school:'云南师范大学',time:'2天前',scope:'province',tag:'secondhand',tagname:'二手闲置',title:'吉他退坑，装备打包出',text:'41寸民谣吉他 + 琴包 + 变调夹 + 拨片三件套，音准良好，同城自提优先，集市已上架。',like:33,com:12,fav:18,home:false,cmts:[['新手小白','能刀到 350 吗','1天前'],['隔壁宿舍','琴包好看吗','2天前']]},
+ {id:'t8',name:'失物小助手',emoji:'🔍',ac:'aa',v:true,school:'四川大学',time:'3小时前',scope:'school',tag:'lost',tagname:'失物招领',title:'捡到一张校园卡，失主速来',text:'江安校区一食堂二楼捡到校园卡一张，已交至一楼服务台，失主带学生证认领。',like:88,com:15,fav:2,home:false,cmts:[['卡主本人','是我的我的，马上去取！','18分钟前'],['好人一生平安','赞一个','1小时前']]}
+];
+
+var PRODUCTS=[
+ {id:'p1',emoji:'📱',g:['#DCE7FF','#C3D4FF'],title:'iPad Air 5 64G 蓝色 95新',price:2799,orig:4399,cond:'95新',cat:'digital',school:'四川大学',fav:32,view:521,delivery:'校内面交 / 快递',time:'今天 14:20',desc:'自用一年，无磕碰无划痕，电池效率 92%，含原装充电器与保护壳。望江校区可当面验机交易，支持开机检查。',sname:'学长小陈',semoji:'🧑‍🎓',sac:'aa',scount:6},
+ {id:'p2',emoji:'📚',g:['#E9DBFF','#D2BCFF'],title:'考研数学全套资料（含近10年真题）',price:35,orig:128,cond:'八成新',cat:'books',school:'电子科技大学',fav:58,view:903,delivery:'校内面交 / 快递',time:'今天 12:08',desc:'去年上岸整理的全套笔记 + 真题解析，字迹清晰无缺页，现在附赠手写错题本，先到先得。',sname:'上岸的阿哲',semoji:'📝',sac:'ac',scount:12},
+ {id:'p3',emoji:'💡',g:['#FFF1C9','#FFE08A'],title:'小米智能台灯 Pro 宿舍神器',price:69,orig:169,cond:'九成新',cat:'dorm',school:'四川大学',fav:12,view:214,delivery:'校内面交',time:'昨天 20:44',desc:'宿舍自习神器，三档色温无频闪，用了半年毕业出，功能完好如新。',sname:'林小满',semoji:'🌿',sac:'ab',scount:3},
+ {id:'p4',emoji:'📷',g:['#FFE0EC','#FFC2D9'],title:'富士拍立得 mini12 奶白 99新',price:459,orig:699,cond:'99新',cat:'digital',school:'云南大学',fav:41,view:668,delivery:'快递 / 同城面交',time:'昨天 16:30',desc:'生日收到的礼物，只用过两次，几乎全新，再送一盒相纸，昆明同城可面交。',sname:'阿花在昆明',semoji:'🌸',sac:'ad',scount:8},
+ {id:'p5',emoji:'👟',g:['#D8F5E3','#B4E9CC'],title:'篮球鞋 42码 仅穿两次',price:199,orig:399,cond:'九成新',cat:'sports',school:'西南财经大学',fav:9,view:187,delivery:'校内面交',time:'昨天 11:02',desc:'实战两次，鞋底无磨损，尺码买大了出，附原鞋盒，光华校区面交。',sname:'球场老王',semoji:'🏀',sac:'ae',scount:2},
+ {id:'p6',emoji:'🍲',g:['#FFE5D4','#FFC9AC'],title:'宿舍小电锅 1.2L 配蒸笼',price:39,orig:89,cond:'八成新',cat:'dorm',school:'四川大学',fav:27,view:402,delivery:'校内面交',time:'前天 21:15',desc:'煮面火锅神器，安全功率 600W，宿舍限电也能用，配蒸笼与说明书。',sname:'干饭魂',semoji:'🍚',sac:'af',scount:5},
+ {id:'p7',emoji:'🎸',g:['#E0E4FF','#BFC8FF'],title:'41寸民谣吉他 送琴包配件',price:380,orig:650,cond:'八成新',cat:'other',school:'云南师范大学',fav:15,view:296,delivery:'同城自提',time:'前天 15:40',desc:'社团退坑出，音准良好，附琴包 + 变调夹 + 拨片三件套，同城自提优先。',sname:'音乐节志愿者',semoji:'🎶',sac:'ad',scount:7},
+ {id:'p8',emoji:'📘',g:['#D6F0FF','#AEDCFF'],title:'英语四级真题黄皮书 2026版',price:25,orig:88,cond:'九成新',cat:'books',school:'四川大学',fav:19,view:351,delivery:'校内面交 / 快递',time:'前天 10:26',desc:'今年 6 月考完出，写了三分之一，附赠听力音频资源，江安/望江都可面交。',sname:'过级的桃子',semoji:'🍑',sac:'ab',scount:4},
+ {id:'p9',emoji:'🧥',g:['#EDEDF5','#D5D5E8'],title:'羽绒马甲 M码 去年购入',price:159,orig:699,cond:'95新',cat:'clothes',school:'四川大学',fav:22,view:478,delivery:'校内面交',time:'3天前',desc:'去年双十一购入，成都冬天穿了一季，无破损无污渍，已洗净收纳。',sname:'收拾行李的CC',semoji:'🧳',sac:'aa',scount:9}
+];
+
+/* 渲染 */
+function postCard(p){
+  return '<article class="post" data-id="'+p.id+'" data-scope="'+p.scope+'" data-tag="'+p.tag+'">'+
+  '<div class="prow"><div class="ava '+p.ac+'">'+p.emoji+'</div><div style="flex:1;min-width:0">'+
+  '<div class="pname">'+p.name+(p.v?'<span class="vbadge">✓</span>':'')+'</div>'+
+  '<div class="pmeta">'+p.school+' · '+p.time+'</div></div>'+
+  '<span class="tagchip">'+p.tagname+'</span></div>'+
+  (p.title?'<div class="ptitle">'+p.title+'</div>':'')+
+  '<div class="ptext">'+p.text+'</div>'+
+  (p.imgs?'<div class="pimgs">'+p.imgs.map(function(m){return '<div class="pimg" style="background:linear-gradient(135deg,'+m[1]+','+m[2]+')">'+m[0]+'</div>'}).join('')+'</div>':'')+
+  '<div class="pfoot"><button class="pact lbtn" data-n="'+p.like+'">♡ <span>'+p.like+'</span></button>'+
+  '<span class="pact">💬 '+p.com+'</span><span class="pact">⭐ '+p.fav+'</span>'+
+  '<span class="pact" style="margin-left:auto">↗</span></div></article>';
+}
+function prodCard(p){
+  return '<div class="prod" data-id="'+p.id+'" data-cat="'+p.cat+'">'+
+  '<div class="gimg" style="background:linear-gradient(135deg,'+p.g[0]+','+p.g[1]+')"><span>'+p.emoji+'</span>'+
+  '<span class="cond">'+p.cond+'</span><span class="gfav">♡ '+p.fav+'</span></div>'+
+  '<div class="gbody"><div class="gtitle">'+p.title+'</div>'+
+  '<div class="gprice"><span class="np">¥'+p.price+'</span><span class="op">¥'+p.orig+'</span></div>'+
+  '<div class="gschool">🏫 '+p.school+'</div></div></div>';
+}
+function hotCard(p){
+  return '<div class="hcard" data-id="'+p.id+'">'+
+  '<div class="himg" style="background:linear-gradient(135deg,'+p.g[0]+','+p.g[1]+')">'+p.emoji+'<span class="cond">'+p.cond+'</span></div>'+
+  '<div class="htitle2">'+p.title+'</div><div class="np" style="font-size:15px">¥'+p.price+'</div></div>';
+}
+$('#homeFeed').innerHTML=POSTS.filter(function(p){return p.home}).map(postCard).join('');
+$('#communityFeed').innerHTML=POSTS.map(postCard).join('');
+$('#marketGrid').innerHTML=PRODUCTS.map(prodCard).join('');
+$('#hotRow').innerHTML=PRODUCTS.slice(0,4).map(hotCard).join('');
+
+/* 点赞 */
+function likeToggle(b){
+  var on=b.classList.toggle('liked');
+  var n=parseInt(b.dataset.n,10);
+  b.querySelector('span').textContent=on?n+1:n;
+  b.childNodes[0].textContent=on?'♥ ':'♡ ';
+}
+
+/* 卡片 → 详情 */
+function bindCards(sel,openFn){
+  $$(sel+' > *').forEach(function(el){
+    el.addEventListener('click',function(e){
+      var b=e.target.closest('.lbtn');
+      if(b){e.stopPropagation();likeToggle(b);return}
+      openFn(el.dataset.id);
+    });
+  });
+}
+bindCards('#homeFeed',openPost);
+bindCards('#communityFeed',openPost);
+bindCards('#marketGrid',openProduct);
+bindCards('#hotRow',openProduct);
+
+/* 首页动态 Tab */
+$$('#homeSegs .seg').forEach(function(s){
+  s.addEventListener('click',function(){
+    $$('#homeSegs .seg').forEach(function(x){x.classList.remove('on')});
+    s.classList.add('on');
+    var v=s.dataset.scope;
+    $$('#homeFeed .post').forEach(function(el){
+      el.style.display=(v==='rec'||el.dataset.scope===v)?'':'none';
+    });
+  });
+});
+
+/* chips 筛选 */
+function chipFilter(chipSel,cardSel,key){
+  $$(chipSel+' .chip').forEach(function(c){
+    c.addEventListener('click',function(){
+      $$(chipSel+' .chip').forEach(function(x){x.classList.remove('on')});
+      c.classList.add('on');
+      var v=c.dataset[key];
+      $$(cardSel).forEach(function(el){
+        el.style.display=(v==='all'||el.dataset[key]===v)?'':'none';
+      });
+    });
+  });
+}
+chipFilter('#communityChips','#communityFeed .post','tag');
+chipFilter('#marketChips','#marketGrid .prod','cat');
+
+/* 排序行（视觉） */
+$$('#tab-market .srt').forEach(function(s){
+  s.addEventListener('click',function(){
+    $$('#tab-market .srt').forEach(function(x){x.classList.remove('on')});
+    s.classList.add('on');
+  });
+});
+
+/* 快捷入口 */
+$$('#homeQ .qitem').forEach(function(q){
+  q.addEventListener('click',function(){
+    var a=q.dataset.act;
+    if(a==='market')switchTab('tab-market');
+    else if(a==='community')switchTab('tab-community');
+    else toast('「'+q.textContent.trim()+'」将在正式版开放 🚧');
+  });
+});
+
+/* Banner 轮播 */
+var bi=0,btrack=$('#btrack');
+setInterval(function(){
+  bi=(bi+1)%3;
+  btrack.style.transform='translateX(-'+(bi*100)+'%)';
+  $$('#bdots .bdot').forEach(function(d,i){d.classList.toggle('on',i===bi)});
+},3800);
+
+/* 详情弹层 */
+function openProduct(id){
+  var p=null;
+  for(var i=0;i<PRODUCTS.length;i++){if(PRODUCTS[i].id===id)p=PRODUCTS[i]}
+  if(!p)return;
+  $('#sheetBody').innerHTML=
+  '<div class="dhero" style="background:linear-gradient(135deg,'+p.g[0]+','+p.g[1]+')">'+
+    '<span style="font-size:78px">'+p.emoji+'</span><span class="cond">'+p.cond+'</span></div>'+
+  '<div class="dbody">'+
+    '<div class="gprice"><span class="np" style="font-size:26px">¥'+p.price+'</span>'+
+    '<span class="op" style="font-size:13px">原价 ¥'+p.orig+'</span>'+
+    '<span class="dtag">✓ 学生认证卖家</span></div>'+
+    '<div class="dtitle">'+p.title+'</div>'+
+    '<div class="dtags"><span>'+p.cond+'</span><span>'+p.delivery+'</span><span>可小刀</span></div>'+
+    '<div class="dmeta">🕒 '+p.time+' 发布 · 👀 '+p.view+' 浏览 · ♡ '+p.fav+' 人想要</div>'+
+    '<div class="seller"><div class="ava '+p.sac+'" style="width:40px;height:40px;font-size:19px">'+p.semoji+'</div>'+
+    '<div style="flex:1;min-width:0"><div class="pname">'+p.sname+' <span class="vbadge">✓</span></div>'+
+    '<div class="pmeta">'+p.school+' · 在售 '+p.scount+' 件</div></div>'+
+    '<button class="mini" onclick="toast(\'店铺主页将在正式版开放 🏪\')">进店</button></div>'+
+    '<div class="dsect">宝贝描述</div><p class="ddesc">'+p.desc+'</p>'+
+    '<div class="dsect">交易说明</div><p class="ddesc">支持校内当面交易与快递寄送；平台担保交易上线后，货款将由平台托管，买家确认收货后结算给卖家。</p>'+
+  '</div>'+
+  '<div class="dbar"><button class="rnd" onclick="toast(\'已加入收藏 ♡\')">♡</button>'+
+  '<button class="rnd" onclick="chatSeller()">💬</button>'+
+  '<button class="buy" onclick="toast(\'Demo：下单支付流程将在正式版实现 🧾\')">立即购买</button></div>';
+  $('#sheet').classList.add('open');
+  $('#sheetBody').scrollTop=0;
+}
+function openPost(id){
+  var p=null;
+  for(var i=0;i<POSTS.length;i++){if(POSTS[i].id===id)p=POSTS[i]}
+  if(!p)return;
+  var cmts=p.cmts||[['小七','太真实了哈哈哈','12分钟前'],['路过的同学','蹲后续～','26分钟前']];
+  var av=['ab','ac','ae'];
+  $('#sheetBody').innerHTML=
+  '<div class="dbody" style="padding-top:20px">'+
+    '<div class="prow"><div class="ava '+p.ac+'">'+p.emoji+'</div>'+
+    '<div style="flex:1;min-width:0"><div class="pname">'+p.name+(p.v?'<span class="vbadge">✓</span>':'')+'</div>'+
+    '<div class="pmeta">'+p.school+' · '+p.time+'</div></div>'+
+    '<span class="tagchip">'+p.tagname+'</span></div>'+
+    (p.title?'<div style="font-size:19px;font-weight:800;margin-top:14px;line-height:1.5">'+p.title+'</div>':'')+
+    '<p style="font-size:14px;line-height:1.9;color:#333A52;margin-top:10px">'+p.text+'</p>'+
+    (p.imgs?'<div class="pimgs" style="margin-top:14px">'+p.imgs.map(function(m){return '<div class="pimg" style="width:31%;height:92px;background:linear-gradient(135deg,'+m[1]+','+m[2]+')">'+m[0]+'</div>'}).join('')+'</div>':'')+
+    '<div class="pfoot" style="padding-top:12px;margin-top:14px">'+
+    '<button class="pact lbtn" data-n="'+p.like+'" id="plike">♡ <span>'+p.like+'</span></button>'+
+    '<span class="pact">💬 '+p.com+'</span><span class="pact">⭐ '+p.fav+'</span>'+
+    '<span class="pact" style="margin-left:auto">↗ 分享</span></div>'+
+    '<div class="dsect">热门评论 · '+cmts.length+'</div>'+
+    cmts.map(function(c,i){
+      return '<div class="cmt"><div class="ava '+av[i%3]+'">'+['🙂','🐱','🌟'][i%3]+'</div>'+
+      '<div style="flex:1"><div class="cn">'+c[0]+'</div><div class="cx">'+c[1]+'</div>'+
+      '<div class="ct2">'+c[2]+' · <span style="color:#5865F2">回复</span></div></div></div>';
+    }).join('')+
+  '</div>'+
+  '<div class="dbar"><div class="cinput">说点什么，鼓励一下发布者～</div>'+
+  '<button class="send" onclick="toast(\'评论功能将在正式版开放 💬\')">发送</button></div>';
+  var lb=$('#plike');
+  if(lb)lb.onclick=function(e){e.stopPropagation();likeToggle(lb)};
+  $('#sheet').classList.add('open');
+  $('#sheetBody').scrollTop=0;
+}
+function closeSheet(){$('#sheet').classList.remove('open')}
+function chatSeller(){closeSheet();switchTab('tab-msg');toast('已打开私信（Demo）')}
+$('#sheet').addEventListener('click',function(e){if(e.target===e.currentTarget)closeSheet()});
+</script>
+</body>
+</html>
