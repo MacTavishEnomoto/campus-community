@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>校集 · 高保真原型 v1.0（需求闭环版）</title>
+<style>
+:root{--brand:#07c160;--brand2:#3b82f6;--red:#ef4444;--amber:#f59e0b;--text:#111827;--muted:#6b7280;--line:#e5e7eb;--bg:#f5f6f7}
+*{margin:0;padding:0;box-sizing:border-box}
+body{display:flex;height:100vh;font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:#0b1220;color:#e2e8f0;overflow:hidden}
+aside{width:270px;min-width:270px;height:100vh;background:#0f172a;border-right:1px solid #1e293b;display:flex;flex-direction:column}
+.as-head{padding:14px 16px;border-bottom:1px solid #1e293b}
+.as-head h1{font-size:17px;font-weight:600;color:#fff}
+.as-head p{font-size:12px;color:#64748b;margin-top:3px}
+.as-seg{display:flex;margin:10px 16px;background:#1e293b;border-radius:8px;overflow:hidden}
+.as-seg button{flex:1;border:0;background:transparent;color:#94a3b8;padding:7px 0;font-size:13px;cursor:pointer}
+.as-seg button.on{background:#334155;color:#fff;font-weight:600}
+nav{flex:1;overflow-y:auto;padding:4px 8px 20px}
+.nav-g{color:#64748b;font-size:12px;padding:12px 8px 4px;font-weight:600}
+.nav-item{display:block;width:100%;text-align:left;border:0;background:transparent;color:#cbd5e1;padding:7px 10px;border-radius:6px;font-size:13px;cursor:pointer}
+.nav-item:hover{background:#1e293b}
+.nav-item.on{background:#16a34a;color:#fff}
+.stage{flex:1;display:flex;align-items:center;justify-content:center;padding:20px}
+.phone{width:375px;height:780px;background:#fff;border-radius:44px;border:8px solid #1e293b;overflow:hidden;position:relative;box-shadow:0 0 0 2px #334155,0 20px 60px rgba(0,0,0,.5)}
+#screen-scroll{height:100%;overflow-y:auto;scrollbar-width:none}
+#screen-scroll::-webkit-scrollbar{display:none}
+.screen{display:none;min-height:100%;background:var(--bg);color:var(--text)}
+.screen.active{display:block}
+.sbar{height:28px;display:flex;align-items:center;justify-content:space-between;padding:0 16px;font-size:11px;color:#111;background:#fff}
+.hdr{height:42px;display:flex;align-items:center;justify-content:center;background:#fff;font-size:15px;font-weight:600;position:relative;border-bottom:1px solid #f0f0f0}
+.hdr .bk{position:absolute;left:10px;font-size:13px;color:#111;background:none;border:0}
+.cnt{padding:10px 12px 90px}
+.card{background:#fff;border-radius:12px;padding:12px;margin-bottom:10px;box-shadow:0 1px 2px rgba(0,0,0,.04)}
+.btn{display:block;width:100%;border:0;border-radius:22px;padding:11px;font-size:14px;font-weight:600;cursor:pointer;text-align:center}
+.btn-green{background:var(--brand);color:#fff}
+.btn-blue{background:var(--brand2);color:#fff}
+.btn-ghost{background:#fff;color:var(--text);border:1px solid var(--line)}
+.btn-sm{display:inline-block;padding:5px 14px;border-radius:14px;font-size:12px;border:0;cursor:pointer}
+.tabbar{position:absolute;bottom:0;left:0;right:0;height:58px;background:#fff;border-top:1px solid var(--line);display:flex;z-index:5}
+.tabbar div{flex:1;text-align:center;padding-top:8px;font-size:11px;color:var(--muted);cursor:pointer}
+.tabbar div.on{color:var(--brand)}
+.tabbar .ic{display:block;font-size:18px;line-height:1}
+.tabs{display:flex;background:#fff;border-bottom:1px solid #f0f0f0}
+.tabs span{flex:1;text-align:center;padding:10px 0;font-size:13px;color:var(--muted);cursor:pointer;position:relative}
+.tabs span.on{color:#111;font-weight:600}
+.tabs span.on:after{content:"";position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:22px;height:3px;background:var(--brand);border-radius:2px}
+.tag{display:inline-block;padding:1px 6px;border-radius:4px;font-size:10px;margin-right:4px}
+.tag-green{background:#e8f7ee;color:#0a7c3f}.tag-blue{background:#e8f1fe;color:#1d4ed8}.tag-red{background:#fee2e2;color:#b91c1c}.tag-amber{background:#fef3c7;color:#b45309}.tag-gray{background:#f3f4f6;color:#6b7280}
+.row{display:flex;align-items:center}
+.row .grow{flex:1}
+.avatar{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#a78bfa,#60a5fa);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;flex-shrink:0}
+.thumb{width:86px;height:86px;border-radius:8px;background:linear-gradient(135deg,#e0e7ff,#fce7f3);flex-shrink:0;display:flex;align-items:center;justify-content:center;color:#6b7280;font-size:11px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;text-align:center;padding:12px}
+.grid4 .ic{width:44px;height:44px;border-radius:12px;margin:0 auto 5px;display:flex;align-items:center;justify-content:center;font-size:20px;color:#fff}
+.muted{color:var(--muted);font-size:12px}
+.price{color:#f5222d;font-weight:700}
+.foot-note{position:absolute;bottom:0;left:0;right:0;background:rgba(17,24,39,.92);color:#e2e8f0;font-size:11px;padding:6px 10px;z-index:6;text-align:center}
+.screen{position:relative}
+input,textarea,select{width:100%;border:1px solid var(--line);border-radius:8px;padding:9px;font-size:13px;background:#fff;font-family:inherit}
+textarea{resize:none}
+.vote-bar{display:flex;height:22px;border-radius:11px;overflow:hidden;background:#f3f4f6}
+.vote-bar div{height:100%}
+.banner{height:120px;border-radius:12px;background:linear-gradient(135deg,#4f46e5,#06b6d4);color:#fff;padding:14px;position:relative;overflow:hidden;margin-bottom:10px}
+.ad-badge{position:absolute;top:4px;right:8px;font-size:10px;color:rgba(255,255,255,.7);border:1px solid rgba(255,255,255,.4);padding:0 4px;border-radius:4px}
+.ad-feed{background:#fff;border-radius:10px;padding:10px;margin:0 12px 10px;box-shadow:0 1px 2px rgba(0,0,0,.04);position:relative}
+.backstage .phone{width:520px;height:700px}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th,td{border:1px solid var(--line);padding:7px 8px;text-align:left}
+th{background:#f9fafb;font-weight:600}
+.kpi{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.kpi .card p{font-size:18px;font-weight:700;color:#111}
+.badge{display:inline-block;min-width:20px;height:20px;line-height:20px;text-align:center;border-radius:10px;background:#ef4444;color:#fff;font-size:11px;padding:0 5px}
+.chat-bubble{max-width:78%;padding:9px 11px;border-radius:10px;font-size:13px;line-height:1.5;margin-bottom:8px;word-break:break-all}
+.me{background:#95ec69;margin-left:auto}
+.other{background:#fff;border:1px solid #f0f0f0}
+.cover{position:absolute;inset:0;background:#fff;z-index:20;display:flex;flex-direction:column}
+.demo-hint{font-size:11px;color:#94a3b8;text-align:center;padding:6px 0;border-bottom:1px dashed #334155}
+</style>
+</head>
+<body>
+<aside>
+  <div class="as-head"><h1>校集 原型 v1.0</h1><p>闲鱼×贴吧×小红书 · 校园三合一 | 需求全闭环</p></div>
+  <div class="as-seg"><button id="seg-stu" class="on" onclick="seg('stu')">学生端</button><button id="seg-back" onclick="seg('back')">后台端</button></div>
+  <nav id="nav"></nav>
+</aside>
+<div class="stage">
+  <div class="phone" id="phone">
+    <div id="screen-scroll">
+
+<!-- ============ S00 需求闭环对照表 ============ -->
+<section class="screen" id="s00">
+  <div class="sbar"><span>9:41</span><span>100%</span></div>
+  <div class="hdr">需求闭环对照表</div>
+  <div class="cnt" style="padding-bottom:30px">
+    <div class="card"><b>使用说明</b><p class="muted" style="margin-top:4px">下表每条需求对应一个可点击入口，点击即可跳到该原型屏。左侧导航可直达全部 33 个屏幕。</p></div>
+    <table>
+      <tr><th style="width:60px">需求</th><th>需求点</th><th style="width:88px">原型入口</th></tr>
+      <tr><td>M1</td><td>微信一键登录</td><td><button class="btn-sm btn-blue" data-go="s02">登录页</button></td></tr>
+      <tr><td>M1</td><td>校园认证三选一 + 校徽 + 毕业降级</td><td><button class="btn-sm btn-blue" data-go="s03">认证页</button></td></tr>
+      <tr><td>M1</td><td>信用分体系与流水</td><td><button class="btn-sm btn-blue" data-go="s26">信用分</button></td></tr>
+      <tr><td>M2</td><td>集市分类/搜索/学校筛选/排序</td><td><button class="btn-sm btn-blue" data-go="s05">集市首页</button></td></tr>
+      <tr><td>M2</td><td>商品详情/信用徽章/同校标/咨询</td><td><button class="btn-sm btn-blue" data-go="s06">商品详情</button></td></tr>
+      <tr><td>M2</td><td>发布(9图/成色/议价/运费模板/AI文案)</td><td><button class="btn-sm btn-blue" data-go="s07">发布页</button></td></tr>
+      <tr><td>M2</td><td>短视频集市挂车</td><td><button class="btn-sm btn-blue" data-go="s08">视频集市</button></td></tr>
+      <tr><td>M2</td><td>担保交易下单/佣金提示</td><td><button class="btn-sm btn-blue" data-go="s09">下单页</button></td></tr>
+      <tr><td>A1</td><td>微信收付通支付(资金不过平台)</td><td><button class="btn-sm btn-blue" data-go="s10">支付页</button></td></tr>
+      <tr><td>A2</td><td>面交核销码(6位,24h)</td><td><button class="btn-sm btn-blue" data-go="s11">核销码</button></td></tr>
+      <tr><td>A3</td><td>订单状态机/超时倒计时</td><td><button class="btn-sm btn-blue" data-go="s12">订单列表</button></td></tr>
+      <tr><td>A1</td><td>退款原路退回/佣金不计提</td><td><button class="btn-sm btn-blue" data-go="s14">退款页</button></td></tr>
+      <tr><td>M3</td><td>校内圈/跨校圈/兴趣圈</td><td><button class="btn-sm btn-blue" data-go="s15">圈子列表</button></td></tr>
+      <tr><td>M3</td><td>帖子详情/楼中楼/热度公式</td><td><button class="btn-sm btn-blue" data-go="s17">帖子详情</button></td></tr>
+      <tr><td>M3</td><td>发帖五形态(文字/图文/视频/投票/问答)</td><td><button class="btn-sm btn-blue" data-go="s18">发帖页</button></td></tr>
+      <tr><td>M3</td><td>树洞/表白墙(匿名引流)</td><td><button class="btn-sm btn-blue" data-go="s19">树洞</button></td></tr>
+      <tr><td>M4</td><td>单聊商品卡片/群聊@提醒</td><td><button class="btn-sm btn-blue" data-go="s20">聊天</button></td></tr>
+      <tr><td>M10</td><td>小法庭影子评议/全民投票/比例+评论区</td><td><button class="btn-sm btn-blue" data-go="s23">小法庭</button></td></tr>
+      <tr><td>M5</td><td>个人主页/达人接单</td><td><button class="btn-sm btn-blue" data-go="s25">我的</button></td></tr>
+      <tr><td>M6</td><td>薯条自助推广(CPM)</td><td><button class="btn-sm btn-blue" data-go="s28">薯条推广</button></td></tr>
+      <tr><td>A4</td><td>卖家佣金账单/T+1提现</td><td><button class="btn-sm btn-blue" data-go="s29">卖家中心</button></td></tr>
+      <tr><td>M6</td><td>开屏/信息流/轮播广告位</td><td><button class="btn-sm btn-blue" data-go="s01">广告位</button></td></tr>
+      <tr><td>M3</td><td>运营日历/同专业推荐</td><td><button class="btn-sm btn-blue" data-go="s30">运营日历</button></td></tr>
+      <tr><td>M7</td><td>后台看板/审核/工单/对账/配置</td><td><button class="btn-sm btn-blue" data-go="s41">后台看板</button></td></tr>
+      <tr><td>M0</td><td>平台配置中心(费率自配置+审计)</td><td><button class="btn-sm btn-blue" data-go="s45">配置中心</button></td></tr>
+      <tr><td>M10</td><td>小法庭一致率对比看板</td><td><button class="btn-sm btn-blue" data-go="s48">对比看板</button></td></tr>
+    </table>
+  </div>
+</section>
+
+<!-- ============ S01 开屏广告 ============ -->
+<section class="screen" id="s01">
+  <div class="cover" style="align-items:center;justify-content:center">
+    <div style="width:100%;height:100%;background:linear-gradient(160deg,#0ea5e9,#6366f1,#a855f7);display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;position:relative">
+      <div style="font-size:44px">🎓</div>
+      <div style="font-size:24px;font-weight:700;margin-top:12px">开学季 · 教材焕新</div>
+      <div style="font-size:13px;opacity:.85;margin-top:8px">旧教材卖学长 新教材找学妹<br>广告 · 楚雄书城 投放</div>
+      <div style="position:absolute;top:14px;right:16px;font-size:12px;border:1px solid rgba(255,255,255,.6);padding:2px 10px;border-radius:14px;cursor:pointer" onclick="show('s04')">跳过 3</div>
+      <div style="position:absolute;bottom:60px;left:0;right:0;text-align:center">
+        <button class="btn" style="width:70%;background:#fff;color:#111;margin:0 auto" onclick="show('s04')">进入校集</button>
+        <div class="muted" style="color:rgba(255,255,255,.7);margin-top:8px">开屏广告位 · 可跳过 · 广告主：楚雄书城（CPM 计费）</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ S02 登录 ============ -->
+<section class="screen" id="s02">
+  <div class="cover" style="align-items:center;justify-content:center;padding:40px 32px">
+    <div style="text-align:center;margin-top:60px">
+      <div style="width:72px;height:72px;border-radius:20px;background:var(--brand);color:#fff;font-size:34px;display:flex;align-items:center;justify-content:center;margin:0 auto">校</div>
+      <div style="font-size:22px;font-weight:700;margin-top:14px">校集</div>
+      <div class="muted" style="margin-top:6px">覆盖 50 所高校的二手交易与校园社区</div>
+    </div>
+    <div style="margin-top:auto;width:100%">
+      <button class="btn btn-green" onclick="show('s03')">微信一键登录</button>
+      <div class="muted" style="text-align:center;margin-top:14px">登录即同意《用户协议》与《隐私政策》<br>学号/姓名仅用于认证比对，永不公开展示</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ S03 校园认证 ============ -->
+<section class="screen" id="s03">
+  <div class="sbar"><span>9:41</span><span>100%</span></div>
+  <div class="hdr">校园认证</div>
+  <div class="cnt">
+    <div class="banner" style="background:linear-gradient(135deg,#10b981,#3b82f6)">认证后可：发帖 / 交易 / 入圈子 / 赚信用分<br><span style="font-size:12px;opacity:.85">游客仅可浏览本校内容</span></div>
+    <div class="card"><div class="row"><div class="grow"><b>学号 + 姓名核验</b><div class="muted" style="margin-top:3px">与学校白名单比对，最快</div></div><button class="btn-sm btn-green" onclick="authGo()">去认证</button></div></div>
+    <div class="card"><div class="row"><div class="grow"><b>学生证照片 OCR</b><div class="muted" style="margin-top:3px">上传学生证，人工复审</div></div><button class="btn-sm btn-green" onclick="authGo()">去认证</button></div></div>
+    <div class="card"><div class="row"><div class="grow"><b>校园邮箱验证</b><div class="muted" style="margin-top:3px">@学校域名邮箱收验证码</div></div><button class="btn-sm btn-green" onclick="authGo()">去认证</button></div></div>
+    <div class="card" id="auth-form" style="display:none">
+      <div style="margin-bottom:8px"><select><option>楚雄师范学院</option><option>云南大学</option><option>昆明理工大学</option></select></div>
+      <input placeholder="学号" style="margin-bottom:8px">
+      <input placeholder="真实姓名（仅认证比对用）">
+      <button class="btn btn-green" style="margin-top:10px" onclick="authDone()">提交核验</button>
+      <div class="muted" style="margin-top:8px">核验失败可走「认证申诉」工单通道（后台工单系统）</div>
+    </div>
+    <div class="card" id="auth-ok" style="display:none;text-align:center">
+      <div style="font-size:40px">✅</div>
+      <b>认证成功 · 楚雄师范学院</b>
+      <div class="muted" style="margin-top:4px">已佩戴「校徽认证」标签 + 信用分 +20（实名）</div>
+      <button class="btn btn-blue" style="margin-top:10px" onclick="show('s04')">进入校集首页</button>
+    </div>
+    <div class="card muted">毕业自动降级：按毕业时间戳定时任务自动转「校友」，交易/发帖权限回收</div>
+  </div>
+</section>
+
+<!-- ============ S04 首页 Feed ============ -->
+<section class="screen" id="s04">
+  <div class="sbar"><span>9:41</span><span>楚雄师范学院</span></div>
+  <div class="hdr">校集 · 楚雄师范学院</div>
+  <div class="tabs"><span class="on">本校</span><span>关注</span><span>推荐</span></div>
+  <div class="cnt">
+    <div class="card"><div class="row"><div class="avatar">A</div><div class="grow" style="margin-left:8px"><b>考研社官方号</b><div class="muted">官方 · 2小时前</div></div><span class="tag tag-blue">官方</span></div>
+      <p style="margin-top:8px;font-size:13px">【本周话题】晒晒你的开学书单，点赞最高的送图书馆座位券一张！<span class="tag tag-green">话题</span></p>
+      <div class="row" style="margin-top:6px"><span class="muted">❤ 128</span><span class="muted" style="margin-left:14px">💬 56</span><span class="muted" style="margin-left:14px">📌 23</span></div>
+    </div>
+    <div class="card"><div class="row"><div class="avatar" style="background:linear-gradient(135deg,#f59e0b,#ef4444)">学</div><div class="grow" style="margin-left:8px"><b>学长在卖高数教材</b><div class="muted">学生 · 30分钟前 · <span class="tag tag-gray" style="font-size:9px">新帖保底曝光中</span></div></div></div>
+      <p style="margin-top:8px;font-size:13px">同济高数第七版上下册，8成新无笔记，50 两本打包，本校自提～</p>
+      <div class="row" style="margin-top:8px"><div class="thumb" style="width:70px;height:70px">教材图</div><div class="thumb" style="width:70px;height:70px;margin-left:6px">内页图</div></div>
+      <div class="row" style="margin-top:6px"><span class="muted">❤ 12</span><span class="muted" style="margin-left:14px">💬 8</span><button class="btn-sm btn-green" style="margin-left:auto" data-go="s06" onclick="go(this)">去看宝贝</button></div>
+    </div>
+    <div class="ad-feed"><span class="ad-badge" style="color:#999;border-color:#ddd">广告</span>
+      <div class="row"><div class="avatar" style="background:linear-gradient(135deg,#06b6d4,#3b82f6)">驾</div><div class="grow" style="margin-left:8px"><b>楚雄腾龙驾校</b><div class="muted">学生特惠班 2980 元 · 信息流广告位（第 4 位）</div></div><button class="btn-sm btn-blue">查看</button></div>
+    </div>
+    <div class="card"><div class="row"><div class="avatar" style="background:linear-gradient(135deg,#ec4899,#f43f5e)">音</div><div class="grow" style="margin-left:8px"><b>吉他社招新</b><div class="muted">社团 · 1小时前</div></div></div>
+      <p style="margin-top:8px;font-size:13px">零基础也可报名！周五晚 7 点社团活动中心 B204，带上一颗爱音乐的心～<span class="tag tag-amber">活动</span></p>
+      <div class="row" style="margin-top:6px"><span class="muted">❤ 45</span><span class="muted" style="margin-left:14px">💬 19</span></div>
+    </div>
+    <div class="ad-feed"><span class="ad-badge" style="color:#999;border-color:#ddd">广告</span>
+      <div class="row"><div class="avatar" style="background:linear-gradient(135deg,#8b5cf6,#d946ef)">考</div><div class="grow" style="margin-left:8px"><b>上岸考研集训营</b><div class="muted">信息流广告位（第 9 位）· CPC 点击计费</div></div><button class="btn-sm btn-blue">了解</button></div>
+    </div>
+    <div class="card"><div class="row"><div class="avatar" style="background:linear-gradient(135deg,#10b981,#84cc16)">球</div><div class="grow" style="margin-left:8px"><b>羽毛球拍转让</b><div class="muted">学生 · 昨天</div></div><span class="tag tag-red">已出</span></div>
+      <p style="margin-top:8px;font-size:13px">尤尼克斯 NR-300 九成新，附手胶，150 元（已被学弟收走，纪念帖）</p>
+    </div>
+  </div>
+  <div class="tabbar"><div class="on" onclick="show('s04')"><span class="ic">🏠</span>首页</div><div onclick="show('s05')"><span class="ic">🛒</span>集市</div><div onclick="show('s08')"><span class="ic">▶</span>视频</div><div onclick="show('s20')"><span class="ic">💬</span>消息</div><div onclick="show('s25')"><span class="ic">👤</span>我的</div></div>
+</section>
+
+<!-- ============ S05 集市首页 ============ -->
+<section class="screen" id="s05">
+  <div class="sbar"><span>9:41</span><span>100%</span></div>
+  <div class="hdr">二手集市</div>
+  <div class="cnt">
+    <div class="row" style="background:#fff;border-radius:20px;padding:8px 12px;margin-bottom:10px"><span class="muted">🔍</span><input style="border:0;background:transparent" placeholder="搜教材 / 数码 / 吉他…"><span class="tag tag-blue" style="flex-shrink:0">搜索</span></div>
+    <div class="banner">开学季教材专场<br><span style="font-size:12px;opacity:.85">集市轮播广告位 · 5-6月毕业季置换为「毕业甩卖季」</span><span class="ad-badge">广告</span></div>
+    <div class="card"><div class="row"><b>同专业推荐</b><span class="tag tag-green" style="margin-left:6px">按专业标签召回</span><button class="btn-sm btn-blue" style="margin-left:auto" onclick="show('s30')">运营日历</button></div>
+      <div class="row" style="margin-top:10px"><div class="thumb">教材</div><div class="grow" style="margin-left:8px"><b>「同专业学长在卖」计算机网络 谢希仁 第8版</b><div class="muted">计科 20 级学长 · 8成新 · <span class="price">¥25</span></div><div class="muted">同专业标签：计算机科学与技术</div></div></div>
+    </div>
+    <div class="grid4" style="background:#fff;border-radius:12px;margin-bottom:10px">
+      <div><div class="ic" style="background:#10b981">📚</div>教材</div>
+      <div><div class="ic" style="background:#3b82f6">💻</div>数码</div>
+      <div><div class="ic" style="background:#f59e0b">🎧</div>生活</div>
+      <div><div class="ic" style="background:#ec4899">💄</div>美妆</div>
+      <div><div class="ic" style="background:#8b5cf6">⚽</div>运动</div>
+      <div><div class="ic" style="background:#06b6d4">🎫</div>票券</div>
+      <div><div class="ic" style="background:#f43f5e">👗</div>服饰</div>
+      <div><div class="ic" style="background:#84cc16">🎸</div>乐器</div>
+    </div>
+    <div class="row" style="margin-bottom:8px;gap:6px">
+      <select style="width:auto;flex:1"><option>全部学校</option><option>仅本校</option><option>云南大学</option></select>
+      <select style="width:auto;flex:1"><option>综合排序</option><option>最新发布</option><option>价格从低到高</option><option>距离最近</option></select>
+      <select style="width:auto;flex:1"><option>全部价格</option><option>0-50</option><option>50-200</option><option>200+</option></select>
+    </div>
+    <div class="grid2">
+      <div class="card" data-go="s06" onclick="go(this)"><div class="thumb" style="width:100%;height:100px">iPad 图</div><p style="margin-top:6px;font-size:12px">iPad 2021 64G 国行</p><div class="row"><span class="price">¥1800</span><span class="muted" style="margin-left:auto">本校 · 面交</span></div></div>
+      <div class="card" data-go="s06" onclick="go(this)"><div class="thumb" style="width:100%;height:100px">教材图</div><p style="margin-top:6px;font-size:12px">考研英语一 全套</p><div class="row"><span class="price">¥30</span><span class="muted" style="margin-left:auto">教材 · 1%佣金</span></div></div>
+      <div class="card" data-go="s06" onclick="go(this)"><div class="thumb" style="width:100%;height:100px">吉他图</div><p style="margin-top:6px;font-size:12px">雅马哈 F310 民谣吉他</p><div class="row"><span class="price">¥650</span><span class="muted" style="margin-left:auto">可议价</span></div></div>
+      <div class="card" data-go="s06" onclick="go(this)"><div class="thumb" style="width:100%;height:100px">耳机图</div><p style="margin-top:6px;font-size:12px">AirPods Pro 2代</p><div class="row"><span class="price">¥900</span><span class="muted" style="margin-left:auto">信用分 120</span></div></div>
+    </div>
+  </div>
+  <div class="tabbar"><div onclick="show('s04')"><span class="ic">🏠</span>首页</div><div class="on" onclick="show('s05')"><span class="ic">🛒</span>集市</div><div onclick="show('s08')"><span class="ic">▶</span>视频</div><div onclick="show('s20')"><span class="ic">💬</span>消息</div><div onclick="show('s25')"><span class="ic">👤</span>我的</div></div>
+</section>
+
+<!-- ============ S06 商品详情 ============ -->
+<section class="screen" id="s06">
+  <div class="sbar"><span>9:41</span><span>100%</span></div>
+  <div class="hdr"><button class="bk" onclick="show('s05')">‹ 返回</button>商品详情</div>
+  <div class="cnt">
+    <div style="height:200px;border-radius:12px;background:linear-gradient(135deg,#c7d2fe,#fbcfe8);display:flex;align-items:center;justify-content:center;color:#666;margin-bottom:10px">商品图轮播 1/5 · 视频封面</div>
+    <div class="card"><div class="row"><span class="price" style="font-size:22px">¥1800</span><span class="muted" style="margin-left:8px">原价 ¥2999 · 可议价</span><span class="tag tag-green" style="margin-left:auto">担保交易 3%</span></div>
+      <b style="display:block;margin-top:8px">iPad 2021 64G 国行 无磕碰 电池健康91%</b>
+      <div class="muted" style="margin-top:6px">成色：几乎全新 · 交易方式：校内面交 / 快递 · 运费：到付<br>浏览 328 · 收藏 45 · 发布于 2天前</div>
+    </div>
+    <div class="card"><div class="row"><div class="avatar">陈</div><div class="grow" style="margin-left:8px"><b>陈同学</b><span class="tag tag-blue" style="margin-left:4px">楚雄师范学院·认证</span><span class="tag tag-green" style="margin-left:4px">同校</span><div class="muted">信用分 120 · 成交 23 单 · 好评率 98%</div></div></div>
+      <div class="row" style="margin-top:10px"><button class="btn-sm btn-ghost" style="flex:1" onclick="show('s25')">主页</button><button class="btn-sm btn-ghost" style="flex:1;margin-left:8px">＋关注</button></div>
+    </div>
+    <div class="card"><b>商品描述</b><p class="muted" style="margin-top:6px;font-size:13px;line-height:1.6">2023年3月京东购入，全程贴膜带壳使用，无维修无进水，送原装充电器。支持面交验机，本校图书馆门口。不接大刀，学弟学妹优先～</p></div>
+    <div class="card"><b>担保交易说明</b><p class="muted" style="margin-top:6px;font-size:12px;line-height:1.7">① 付款到微信担保（平台不过资金）② 面交出示核销码 ③ 确认收货后微信分账：卖家 97% / 平台 3% ④ 退款原路退回，佣金不计提</p></div>
+  </div>
+  <div style="position:absolute;bottom:0;left:0;right:0;height:60px;background:#fff;border-top:1px solid var(--line);display:flex;align-items:center;padding:0 12px;gap:8px;z-index:5">
+    <button class="btn-sm btn-ghost" onclick="show('s20')">💬 咨询</button>
+    <button class="btn" style="flex:1;border-radius:20px" onclick="alert('已收藏')">收藏</button>
+    <button class="btn btn-green" style="flex:1;border-radius:20px" onclick="show('s09')">立即购买</button>
+  </div>
+</section>
+
+<!-- ============ S07 发布商品 ============ -->
+<section class="screen" id="s07">
+  <div class="sbar"><span>9:41</span><span>100%</span></div>
+  <div class="hdr"><button class="bk" onclick="show('s05')">‹</button>发布商品</div>
+  <div class="cnt">
+    <div class="card"><b>图片 / 视频（最多 9 张）</b><div class="grid4" style="padding:10px 0 0"><div class="thumb" style="width:64px;height:64px">图1</div><div class="thumb" style="width:64px;height:64px">图2</div><div class="thumb" style="width:64px;height:64px;background:#f3f4f6">＋</div></div></div>
+    <div class="card"><b>标题</b><input style="margin-top:8px" value="iPad 2021 64G 国行"></div>
+    <div class="card"><b>描述</b><textarea rows="3" style="margin-top:8px">全程带壳使用，无维修…</textarea>
+      <button class="btn-sm btn-blue" style="margin-top:8px" onclick="alert('AI 助手已根据图片生成文案：\n「iPad 2021 64G 国行，成色几乎全新，电池健康 91%，附原装充电器，支持面交验机。」\n\nAI 参考定价：¥1750-1900（同类均值 ¥1832）')">✨ AI 助手：一键生成文案与参考定价</button>
+    </div>
+    <div class="card"><b>分类 / 成色 / 价格</b>
+      <div class="row" style="gap:8px;margin-top:8px"><select><option>数码</option><option>教材</option></select><select><option>几乎全新</option><option>轻微使用</option><option>明显使用</option></select></div>
+      <div class="row" style="margin-top:8px;align-items:center"><span>¥</span><input style="width:120px" value="1800"><span style="margin-left:8px;font-size:13px">可议价</span><input type="checkbox" checked style="width:16px;height:16px;margin-left:6px"></div>
+    </div>
+    <div class="card"><b>交易方式 / 运费模板</b>
+      <div style="margin-top:8px"><select><option>校内面交（担保交易+核销码）</option><option>自提</option><option>快递</option></select></div>
+      <div style="margin-top:8px"><select><option>运费到付（默认）</option><option>包邮</option><option>按件 ¥10</option></select></div>
+    </div>
+    <div class="card muted">佣金提示：数码类成交后平台收取 3%（教材类 1%），费率以成交时平台配置为准</div>
+    <button class="btn btn-green" onclick="alert('已提交，进入审核队列\n（敏感词/图片 AI 审核 → 人工抽检）')">发布</button>
+  </div>
+</section>
+
+<!-- ============ S08 短视频集市 ============ -->
+<section class="screen" id="s08">
+  <div class="sbar"><span>9:41</span><span>100%</span></div>
+  <div class="hdr">视频集市</div>
+  <div class="cnt">
+    <div style="position:relative;height:360px;border-radius:12px;background:linear-gradient(160deg,#334155,#0f172a);margin-bottom:10px;color:#fff;padding:14px;display:flex;flex-direction:column">
+      <span class="tag tag-gray" style="position:absolute;top:10px;right:10px">视频 1/3 · 上滑切换</span>
+      <div class="grow"></div>
+      <b>开箱视频：这台 iPad 真的香</b>
+      <div class="muted" style="color:#cbd5e1;margin-top:4px">陈同学 · 楚雄师范学院</div>
+      <div class="row" style="margin-top:10px;background:rgba(255,255,255,.14);border-radius:10px;padding:8px">
+        <div class="thumb" style="width:44px;height:44px;border-radius:6px">图</div>
+        <div class="grow" style="margin-left:8px;color:#fff">iPad 2021 64G · <span style="color:#fca5a5">¥1800</span></div>
+        <button class="btn-sm" style="background:#fff;color:#111" onclick="show('s06')">去购买</button>
+      </div>
+    </div>
+    <div class="card muted">视频挂车：发布短视频时选择关联商品，刷到即可一键购买（抖音电商模式）；视频发布同样进审核队列</div>
+  </div>
+  <div class="tabbar"><div onclick="show('s04')"><span class="ic">🏠</span>首页</div><div onclick="show('s05')"><span class="ic">🛒</span>集市</div><div class="on" onclick="show('s08')"><span class="ic">▶</span>视频</div><div onclick="show('s20')"><span class="ic">💬</span>消息</div><div onclick="show('s25')"><span class="ic">👤</span>我的</div></div>
+</section>
+
+<!-- ============ S09 下单确认 ============ -->
+<section class="screen" id="s09">
+  <div class="sbar"><span>9:41</span><span>100%</span></div>
+  <div class="hdr"><button class="bk" onclick="show('s06')">‹</button>确认订单</div>
+  <div class="cnt">
+    <div class="card"><div class="row"><div class="thumb" style="width:70px;height:70px">图</div><div class="grow" style="margin-left:10px"><b>iPad 2021 64G 国行</b><div class="muted">成色：几乎全新 · 卖家：陈同学（同校）</div><div class="muted">交易方式：校内面交（核销码交付）</div></div><span class="price">¥1800</span></div></div>
+    <div class="card">
+      <div class="row"><span class="muted">商品金额</span><span style="margin-left:auto">¥1800.00</span></div>
+      <div class="row" style="margin-top:8px"><span class="muted">运费</span><span style="margin-left:auto">¥0.00（面交）</span></div>
+      <div class="row" style="margin-top:8px"><b>合计</b><b class="price" style="margin-left:auto;font-size:18px">¥1800.00</b></div>
+    </div>
+    <div class="card" style="border-left:3px solid var(--brand)">
+      <b>🔒 担保交易 · 佣金提示</b>
+      <p class="muted" style="margin-top:6px;font-size:12px;line-height:1.7">平台抽取成交价 <b>3%</b>（¥54.00）作为交易服务费，由卖家承担；确认收货后微信分账：卖家 ¥1746 / 平台 ¥54。<br>付款进入微信担保账户，<b>平台不触碰资金</b>，退款原路退回。</p>
+    </div>
+    <div class="card"><b>交付说明</b><p class="muted" style="margin-top:6px;font-size:12px">面交时由买家出示 6 位核销码，卖家核销后订单进入待确认；核销后 24 小时未确认自动完成。</p></div>
+  </div>
+  <div style="position:absolute;bottom:0;left:0;right:0;background:#fff;padding:12px;border-top:1px solid var(--line);z-index:5"><button class="btn btn-green" onclick="show('s10')">提交订单 · 微信支付</button></div>
+</section>
+
+<!-- ============ S10 支付 ============ -->
+<section class="screen" id="s10">
+  <div class="sbar"><span>9:41</span><span>100%</span></div>
+  <div class="hdr">微信支付（模拟）</div>
+  <div class="cnt">
+    <div class="card" style="text-align:center;padding:30px 12px">
+      <div style="font-size:14px;color:#576b95">微信支付</div>
+      <div style="font-size:34px;font-weight:700;margin-top:10px">¥1800.00</div>
+      <div class="muted" style="margin-top:6px">收款方：校集（楚雄）科技有限公司<br>微信电商收付通 · 担保交易</div>
+      <div style="margin-top:20px;border:1px dashed var(--line);border-radius:8px;padding:10px;background:#fafafa;text-align:left">
+        <div class="muted" style="font-size:12px">资金流向：买家 → 微信收付通担保账户 → 确认收货后分账<br>卖家 97%（¥1746）｜平台佣金 3%（¥54）<br>24 小时未支付订单自动关闭</div>
+      </div>
+    </div>
+    <button class="btn btn-green" onclick="payOk()">确认支付</button>
+    <button class="btn btn-ghost" style="margin-top:8px" onclick="show('s09')">取消</button>
+  </div>
+</section>
+
+<!-- ============ S11 面交核销码 ============ -->
+<section class="screen" id="s11">
+  <div class="sbar"><span>9:41</span><span>100%</span></div>
+  <div class="hdr">面交核销</div>
+  <div class="cnt">
+    <div class="card" style="text-align:center;padding:30px 12px">
+      <div class="muted">支付成功 · 订单号 XJ20260912001</div>
+      <div style="margin-top:14px;font-size:13px">请向卖家出示 6 位核销码</div>
+      <div style="font-size:46px;font-weight:700;letter-spacing:10px;margin-top:14px;color:#111">8 3 2 9 1 6</div>
+      <div class="muted" style="margin-top:14px">核销码 10 分钟刷新一次<br>卖家核销后订单进入「待确认收货」</div>
+      <div class="tag tag-amber" style="margin-top:10px">未核销 24 小时订单自动取消并退款</div>
+    </div>
+    <div class="card"><b>卖家视角</b><div class="muted" style="margin-top:6px">卖家端展示「扫码核销」按钮 → 扫描买家码 → 双方当面确认商品 → 核销完成</div></div>
+    <button class="btn btn-green" onclick="show('s12')">我已完成面交（模拟核销）</button>
+  </div>
+</section>
+
+<!-- ============ S12 订单列表 ============ -->
+<section class="screen" id="s12">
+  <div class="sbar"><span>9:41</span><span>100%</span></div>
+  <div class="hdr">我的订单</div>
+  <div class="tabs"><span>全部</span><span class="on">进行中</span><span>已完成</span><span>退款/仲裁</span></div>
+  <div class="cnt">
+    <div class="card" data-go="s13" onclick="go(this)"><div class="row"><div class="thumb" style="width:70px;height:70px">图</div><div class="grow" style="margin-left:10px"><b>iPad 2021 64G 国行</b><div class="muted">待确认收货</div><div class="muted">核销后剩余确认时间 <b style="color:#f59e0b">21:38:12</b></div></div><span class="price">¥1800</span></div>
+      <div class="row" style="margin-top:8px"><button class="btn-sm btn-ghost" style="margin-left:auto" onclick="show('s11')">查看核销码</button><button class="btn-sm btn-green" style="margin-left:8px" onclick="confirmDone()">确认收货</button></div></div>
+    <div class="card" onclick="alert('待付款订单：剩余 23:41:09 自动关闭\n超时规则：24小时未支付自动关单（配置中心可调）')"><div class="row"><div class="thumb" style="width:70px;height:70px">图</div><div class="grow" style="margin-left:10px"><b>雅马哈 F310 民谣吉他</b><div class="muted">待付款 · <b style="color:#ef4444">23:41:09</b> 后自动关闭</div></div><span class="price">¥650</span></div></div>
+    <div class="card"><div class="row"><div class="thumb" style="width:70px;height:70px">图</div><div class="grow" style="margin-left:10px"><b>考研英语全套</b><div class="muted">已发货（快递）· 剩余自动确认 <b>9天</b></div></div><span class="price">¥30</span></div></div>
+  </div>
+  <div class="tabbar"><div onclick="show('s04')"><span class="ic">🏠</span>首页</div><div onclick="show('s05')"><span class="ic">🛒</span>集市</div><div onclick="show('s08')"><span class="ic">▶</span>视频</div><div onclick="show('s20')"><span class="ic">💬</span>消息</div><div onclick="show('s25')"><span class="ic">👤</span>我的</div></div>
+</section>
+
+<!-- ============ S13 订单详情 ============ -->
+<section class="screen" id="s13">
+  <div class="sbar"><span>9:41</span><span>100%</span></div>
+  <div class="hdr"><button class="bk" onclick="show('s12')">‹</button>订单详情</div>
+  <div class="cnt">
+    <div class="card" style="text-align:center"><div class="tag tag-green" style="margin-bottom:6px">待确认收货</div><div class="muted">状态机：待付款 → 已付款待交付 → 已交付待确认 → 已完成</div></div>
+    <div class="card"><b>订单信息</b>
+      <div class="row" style="margin-top:8px"><span class="muted">订单号</span><span style="margin-left:auto">XJ20260912001</span></div>
+      <div class="row" style="margin-top:6px"><span class="muted">商品金额</span><span style="margin-left:auto">¥1800.00</span></div>
+      <div class="row" style="margin-top:6px"><span class="muted">佣金率快照</span><span style="margin-left:auto">3%（成交时冻结，改费率不追溯）</span></div>
+      <div class="row" style="margin-top:6px"><span class="muted">佣金</span><span style="margin-left:auto">¥54.00（确认收货后计提）</span></div>
+      <div class="row" style="margin-top:6px"><span class="muted">卖家应收</span><span style="margin-left:auto">¥1746.00（微信分账）</span></div>
+    </div>
+    <div class="card"><b>流程时间线</b>
+      <div class="muted" style="margin-top:8px;line-height:2">● 09-12 11:52 买家提交订单<br>● 09-12 11:53 微信支付成功（担保冻结）<br>● 09-12 12:05 面交核销完成（核销码 832916）<br>○ 等待买家确认收货（核销后 24h 自动确认）<br>○ 确认后触发微信分账 97% / 3%<br>○ 卖家提现 T+1 到账</div>
+    </div>
+    <div class="row" style="gap:8px"><button class="btn btn-ghost" style="flex:1" onclick="show('s14')">申请退款</button><button class="btn btn-green" style="flex:1" onclick="confirmDone()">确认收货</button></div>
+  </div>
+</section>
+
+<!-- ============ S14 退款申请 ============ -->
+<section class="screen" id="s14">
+  <div class="sbar"><span>9:41</span><span>100%</span></div>
+  <div class="hdr"><button class="bk" onclick="show('s13')">‹</button>申请退款</div>
+  <div class="cnt">
+    <div class="card"><div class="row"><div class="thumb" style="width:70px;height:70px">图</div><div class="grow" style="margin-left:10px"><b>iPad 2021 64G</b><div class="muted">¥1800.00</div></div></div></div>
+    <div class="card"><b>退款原因</b><div style="margin-top:8px"><select><option>商品与描述不符</option><option>卖家未按约定交付</option><option>不想要了</option><option>其他</option></select></div>
+      <textarea rows="3" style="margin-top:8px" placeholder="补充说明"></textarea>
+      <div class="thumb" style="width:64px;height:64px;margin-top:8px;background:#f3f4f6">＋上传凭证</div>
+    </div>
+    <div class="card" style="border-left:3px solid var(--red)">
+      <b>退款规则</b>
+      <p class="muted" style="margin-top:6px;font-size:12px;line-height:1.7">· 退款金额全额<b>原路退回</b>买家<br>· 佣金<b>不计提</b>（佣金只在确认收货后产生）<br>· 卖家 48 小时未处理自动转入仲裁<br>· 仲裁：平台裁决 → 结案脱敏发布小法庭公众评议</p>
+    </div>
+    <button class="btn" style="background:#ef4444;color:#fff" onclick="alert('退款申请已提交\n倒计时：卖家 48 小时内处理，超时自动转仲裁')">提交退款申请</button>
+  </div>
+</section>
+
+<!-- ============ S15 圈子列表 ============ -->
+<section class="screen" id="s15">
+  <div class="sbar"><span>9:41</span><span>100%</span></div>
+  <div class="hdr">圈子</div>
+  <div class="cnt">
+    <div class="card" onclick="show('s16')"><div class="row"><div class="avatar" style="background:linear-gradient(135deg,#10b981,#3b82f6)">校</div><div class="grow" style="margin-left:10px"><b>楚雄师范学院校内圈</b><div class="muted">认证自动入圈 · 1.2 万人 · 圈主：官方运营</div></div><span class="tag tag-blue">已加入</span></div></div>
+    <div class="card"><div class="row"><div class="avatar" style="background:linear-gradient(135deg,#f59e0b,#ef4444)">云</div><div class="grow" style="margin-left:10px"><b>滇中高校跨校圈</b><div class="muted">楚雄·昆明·大理 联盟圈 · 3.8 万人</div></div><button class="btn-sm btn-green">加入</button></div></div>
+    <div class="card"><div class="row"><div class="avatar" style="background:linear-gradient(135deg,#8b5cf6,#ec4899)">考</div><div class="grow" style="margin-left:10px"><b>考研上岸互助圈</b><div class="muted">兴趣圈 · 2.1 万人 · 圈主：@考研小张（考核制）</div></div><button class="btn-sm btn-green">加入</button></div></div>
+    <div class="card"><div class="row"><div class="avatar" style="background:linear-gradient(135deg,#06b6d4,#84cc16)">游</div><div class="grow" style="margin-left:10px"><b>游戏开黑圈</b><div class="muted">兴趣圈 · 8900 人</div></div><button class="btn-sm btn-green">加入</button></div></div>
+    <div class="card"><div class="row"><div class="avatar" style="background:linear-gradient(135deg,#f43f5e,#f59e0b)">摄</div><div class="grow" style="margin-left:10px"><b>校园摄影圈</b><div class="muted">兴趣圈 · 5600 人 · 圈主竞选制</div></div><button class="btn-sm btn-green">加入</button></div></div>
+    <button class="btn btn-blue" onclick="alert('申请创建圈子：\n提交名称/类型/简介 → 平台审核 → 圈主上任\n圈主权益：置顶权/活动资源/校园大使资格\n考核：月活+违规率，不达标罢免')">＋ 申请创建新圈子</button>
+  </div>
+  <div class="tabbar"><div onclick="show('s04')"><span class="ic">🏠</span>首页</div><div onclick="show('s05')"><span class="ic">🛒</span>集市</div><div onclick="show('s08')"><span class="ic">▶</span>视频</div><div onclick="show('s20')"><span class="ic">💬</span>消息</div><div onclick="show('s25')"><span class="ic">👤</span>我的</div></div>
+</section>
+
+<!-- ============ S16 圈子主页 ============ -->
+<section class="screen" id="s16">
+  <div class="sbar"><span>9:41</span><span>100%</span></div>
+  <div class="hdr"><button class="bk" onclick="show('s15')">‹</button>楚雄师范学院校内圈</div>
+  <div class="cnt">
+    <div class="card" style="border-left:3px solid var(--brand)"><span class="tag tag-red">置顶</span> <b>【新人报道帖】</b><div class="muted" style="margin-top:4px">官方自动生成：每位新认证同学可在此报到，报道即送 10 积分</div></div>
+    <div class="card" style="border-left:3px solid #f59e0b"><span class="tag tag-amber">精华</span> <b>图书馆选座攻略（超全版）</b><div class="muted" style="margin-top:4px">❤ 2.3k · 💬 486</div></div>
+    <div class="card" onclick="show('s17')"><div class="row"><div class="avatar">学</div><div class="grow" style="margin-left:8px"><b>二手教材怎么卖才快？</b><div class="muted">@学长经验 · 10分钟前</div></div></div><p class="muted" style="margin-top:6px">热度分 1286.4（赞×1+评×2+藏×3+转×4，24h 半衰期）</p></div>
+    <div class="card"><b>圈子管理（圈主视角）</b><div class="muted" style="margin-top:6px">置顶 / 加精 / 锁定 / 删除 / 禁言成员 · 违规处置梯度：警告→删帖→禁言1/3/7/30天→封号</div></div>
+    <button class="btn btn-green" onclick="show('s18')">＋ 发帖</button>
+  </div>
+</section>
+
+<!-- ============ S17 帖子详情 ============ -->
+<section class="screen" id="s17">
+  <div class="sbar"><span>9:41</span><span>100%</span></div>
+  <div class="hdr"><button class="bk" onclick="show('s16')">‹</button>帖子详情</div>
+  <div class="cnt">
+    <div class="card">
+      <div class="row"><div class="avatar">学</div><div class="grow" style="margin-left:8px"><b>学长经验</b><span class="tag tag-blue" style="margin-left:4px">认证</span><div class="muted">楚雄师范学院 · 10分钟前</div></div><button class="btn-sm btn-ghost">＋关注</button></div>
+      <b style="display:block;margin-top:10px">二手教材怎么卖才快？</b>
+      <p style="font-size:13px;line-height:1.7;margin-top:6px">1. 标题带上「专业+书名+版本」<br>2. 开学季挂 1% 佣金，成本更低<br>3. 拍照别只拍封面，拍目录和笔记页<br>4. 挂上短视频，同专业推荐位流量大</p>
+      <div class="row" style="margin-top:10px;background:#fafafa;border-radius:8px;padding:8px"><span class="muted" style="font-size:11px">热度公式：Score=(基础分+赞×1+评×2+藏×3+转×4)×e^(-λt)，λ=24h半衰期 · 当前热度 1286.4 · 新帖保底曝光 100 次已达标</span></div>
+      <div class="row" style="margin-top:10px"><button class="btn-sm btn-ghost" onclick="like(this)">❤ 128</button><button class="btn-sm btn-ghost" style="margin-left:8px">⭐ 56</button><button class="btn-sm btn-ghost" style="margin-left:8px">↗ 23</button><button class="btn-sm btn-ghost" style="margin-left:auto">举报</button></div>
+    </div>
+    <div class="card"><b>评论 89（楼中楼）</b>
+      <div style="margin-top:10px"><div class="row"><div class="avatar" style="width:28px;height:28px;font-size:11px">萌</div><div class="grow" style="margin-left:8px"><b style="font-size:13px">萌新学妹</b><div style="font-size:12px;margin-top:2px">学长，教材挂 1% 佣金是真的吗？</div>
+        <div style="background:#fafafa;border-radius:8px;padding:8px;margin-top:6px"><span class="muted" style="font-size:12px"><b>回复 @萌新学妹：</b>真的，教材类是平台引流政策，别的类目 3%</span>
+        <div class="row" style="margin-top:4px"><span class="muted" style="font-size:11px">❤ 12 · 回复</span></div></div>
+      </div></div>
+      <div style="margin-top:10px"><div class="row"><div class="avatar" style="width:28px;height:28px;font-size:11px;background:linear-gradient(135deg,#10b981,#3b82f6)">涛</div><div class="grow" style="margin-left:8px"><b style="font-size:13px">涛哥</b><div style="font-size:12px;margin-top:2px">补充：毕业季集中挂，一天能出十几本</div></div></div></div>
+    </div>
+    <div style="position:absolute;bottom:0;left:0;right:0;background:#fff;padding:10px 12px;border-top:1px solid var(--line);display:flex;gap:8px;z-index:5">
+      <input placeholder="友善评论…" style="flex:1">
+      <button class="btn-sm btn-green">发送</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ S18 发帖 ============ -->
+<section class="screen" id="s18">
+  <div class="sbar"><span>9:41</span><span>100%</span></div>
+  <div class="hdr"><button class="bk" onclick="show('s16')">‹</button>发帖</div>
+  <div class="cnt">
+    <div class="card"><b>帖子类型</b><div class="row" style="gap:6px;margin-top:8px;flex-wrap:wrap">
+      <button class="btn-sm btn-green">文字</button><button class="btn-sm btn-ghost">图文(9图)</button><button class="btn-sm btn-ghost">视频</button><button class="btn-sm btn-ghost">投票</button><button class="btn-sm btn-ghost">问答</button></div></div>
+    <div class="card"><b>选择圈子</b><div style="margin-top:8px"><select><option>楚雄师范学院校内圈</option><option>考研上岸互助圈</option><option>滇中高校跨校圈</option></select></div></div>
+    <div class="card"><b>标题（可选）</b><input style="margin-top:8px" placeholder="起个吸引人的标题"></div>
+    <div class="card"><b>内容</b><textarea rows="5" style="margin-top:8px" placeholder="分享你的校园生活…"></textarea>
+      <div class="grid4" style="padding:10px 0 0"><div class="thumb" style="width:64px;height:64px;background:#f3f4f6">＋图</div><div class="thumb" style="width:64px;height:64px;background:#f3f4f6">＋视频</div></div></div>
+    <div class="card"><b>话题标签</b><div style="margin-top:8px"><span class="tag tag-green">#开学季</span><span class="tag tag-green" style="margin-left:6px">#新人报道</span><span class="tag tag-gray" style="margin-left:6px">＋添加</span></div></div>
+    <div class="card"><b>投票选项（投票帖）</b><input style="margin-top:8px" placeholder="选项A"><input style="margin-top:6px" placeholder="选项B"></div>
+    <button class="btn btn-green" onclick="alert('发布成功：进入审核队列\n敏感词过滤 → 通过后新帖保底曝光 50-100 次\n互动达标进入热度池')">发布帖子</button>
+  </div>
+</section>
+
+<!-- ============ S19 树洞/表白墙 ============ -->
+<section class="screen" id="s19">
+  <div class="sbar"><span>9:41</span><span>100%</span></div>
+  <div class="hdr">树洞 · 表白墙</div>
+  <div class="cnt">
+    <div class="card" style="border-left:3px solid #ec4899"><b>匿名模式</b><p class="muted" style="margin-top:6px;font-size:12px">本板块发帖完全匿名（头像昵称隐藏），内容仍进审核队列，违规可追溯、可关闭板块</p></div>
+    <div class="card"><div class="row"><div class="avatar" style="background:#cbd5e1;color:#64748b">匿</div><div class="grow" style="margin-left:8px"><b>匿名同学 #4821</b><div class="muted">3小时前</div></div></div><p style="margin-top:8px;font-size:13px">图书馆三楼靠窗那个位置，每天都能看到同一个女生，好想认识她。表白墙能帮我传达吗？（已匿名）</p>
+      <div class="row" style="margin-top:6px"><span class="muted">❤ 89</span><span class="muted" style="margin-left:14px">💬 45</span></div></div>
+    <div class="card"><div class="row"><div class="avatar" style="background:#cbd5e1;color:#64748b">匿</div><div class="grow" style="margin-left:8px"><b>匿名同学 #5201</b><div class="muted">5小时前</div></div></div><p style="margin-top:8px;font-size:13px">考研二战好焦虑，有没有一起自习互相监督的搭子？</p></div>
+    <button class="btn" style="background:#ec4899;color:#fff" onclick="alert('匿名发帖（经审核后展示）')">＋ 匿名发帖</button>
+  </div>
+</section>
+
+<!-- ============ S20 聊天列表 ============ -->
+<section class="screen" id="s20">
+  <div class="sbar"><span>9:41</span><span>100%</span></div>
+  <div class="hdr">消息</div>
+  <div class="cnt">
+    <div class="card" onclick="show('s21')"><div class="row"><div class="avatar">陈</div><div class="grow" style="margin-left:10px"><b>陈同学</b><div class="muted" style="font-size:12px">[商品卡片] iPad 2021 64G</div></div><span class="badge">2</span></div></div>
+    <div class="card" onclick="show('s22')"><div class="row"><div class="avatar" style="background:linear-gradient(135deg,#10b981,#3b82f6)">考</div><div class="grow" style="margin-left:10px"><b>考研上岸互助圈群</b><div class="muted" style="font-size:12px">@全体 今晚 8 点线上答疑</div></div><span class="badge">5</span></div></div>
+    <div class="card"><div class="row"><div class="avatar" style="background:linear-gradient(135deg,#f59e0b,#ef4444)">校</div><div class="grow" style="margin-left:10px"><b>校集小助手</b><div class="muted" style="font-size:12px">你的商品通过审核，已上架</div></div></div></div>
+    <div class="card muted" style="font-size:12px">防骚扰规则：陌生人首条消息限图限链；敏感词过滤+诈骗话术识别（IM 独立风控通道）；消息异步落库+订阅消息推送</div>
+  </div>
+  <div class="tabbar"><div onclick="show('s04')"><span class="ic">🏠</span>首页</div><div onclick="show('s05')"><span class="ic">🛒</span>集市</div><div onclick="show('s08')"><span class="ic">▶</span>视频</div><div class="on" onclick="show('s20')"><span class="ic">💬</span>消息<span class="badge" style="margin-left:2px">2</span></div><div onclick="show('s25')"><span class="ic">👤</span>我的</div></div>
+</section>
+
+<!-- ============ S21 单聊 ============ -->
+<section class="screen" id="s21">
+  <div class="sbar"><span>9:41</span><span>100%</span></div>
+  <div class="hdr"><button class="bk" onclick="show('s20')">‹</button>陈同学</div>
+  <div class="cnt" style="padding-bottom:70px">
+    <div class="chat-bubble other" style="margin-left:0">你好，iPad 还在吗？</div>
+    <div class="chat-bubble me">在的，学弟想要吗？</div>
+    <div class="chat-bubble other" style="margin-left:0">
+      <div class="row"><div class="thumb" style="width:56px;height:56px;border-radius:8px">图</div><div class="grow" style="margin-left:8px"><b style="font-size:12px">iPad 2021 64G 国行</b><div style="font-size:12px;color:#f5222d">¥1800</div></div></div>
+      <div class="muted" style="font-size:11px;margin-top:4px">商品卡片 · 点击查看详情</div>
+    </div>
+    <div class="chat-bubble me">可以小刀吗？1750 面交？</div>
+    <div class="chat-bubble other" style="margin-left:0">1800 不刀了，电池 91 很新，送你一个壳。可以约图书馆门口面交</div>
+    <div class="chat-bubble me"><span style="font-size:12px;color:#666">[撤回一条消息]</span></div>
+    <div class="chat-bubble me">好，走担保交易，你挂链接我拍</div>
+    <div class="chat-bubble other" style="margin-left:0">OK，拍完明天下午 3 点面交，你出示核销码</div>
+  </div>
+  <div style="position:absolute;bottom:0;left:0;right:0;background:#f5f6f7;padding:10px 12px;display:flex;gap:8px;z-index:5;border-top:1px solid var(--line)">
+    <span style="font-size:18px">🎤</span><span style="font-size:18px">😊</span><span style="font-size:18px">＋</span>
+    <input placeholder="输入消息…" style="flex:1;background:#fff">
+    <button class="btn-sm btn-green">发送</button>
+  </div>
+</section>
+
+<!-- ============ S22 群聊 ============ -->
+<section class="screen" id="s22">
+  <div class="sbar"><span>9:41</span><span>100%</span></div>
+  <div class="hdr"><button class="bk" onclick="show('s20')">‹</button>考研上岸互助圈群（128/200）</div>
+  <div class="cnt" style="padding-bottom:70px">
+    <div class="muted" style="text-align:center;font-size:11px;margin-bottom:10px">群聊人数上限 200，500 人需申请；认证学生方可建群</div>
+    <div class="chat-bubble other" style="margin-left:0"><b style="font-size:12px;color:#3b82f6">@小张学长</b><br>今晚 8 点直播讲高数真题，记得来</div>
+    <div class="chat-bubble other" style="margin-left:0"><b style="font-size:12px;color:#3b82f6">@全体成员</b><br>有要拼真题卷的吗？5 人成团 8 折</div>
+    <div class="chat-bubble me">带我一个！@小张学长</div>
+    <div class="chat-bubble other" style="margin-left:0"><span style="font-size:12px;color:#999">[引用 小张学长]</span><br>拉个拼单小群，链接发群公告</div>
+    <div class="muted" style="text-align:center;font-size:11px;margin-top:6px">@提醒 / 引用回复 / 撤回 / 已读</div>
+  </div>
+  <div style="position:absolute;bottom:0;left:0;right:0;background:#f5f6f7;padding:10px 12px;display:flex;gap:8px;z-index:5;border-top:1px solid var(--line)">
+    <input placeholder="发群消息…" style="flex:1;background:#fff"><button class="btn-sm btn-green">发送</button>
+  </div>
+</section>
+
+<!-- ============ S23 小法庭频道 ============ -->
+<section class="screen" id="s23">
+  <div class="sbar"><span>9:41</span><span>100%</span></div>
+  <div class="hdr">校园小法庭</div>
+  <div class="cnt">
+    <div class="banner" style="background:linear-gradient(135deg,#b45309,#f59e0b)">影子评审阶段：以下案件已由平台裁决并执行<br><span style="font-size:12px;opacity:.85">你的投票用于验证学生陪审与平台裁决的一致性（一致率 ≥80% 后切换为陪审裁决模式）</span></div>
+    <div class="card" onclick="show('s24')"><div class="row"><div class="grow"><b>已结案 · 公众评议 #C2026008</b><div class="muted">「耳机有杂音」退款纠纷 · 涉款 ¥300</div><div class="muted">平台裁决：支持买家 · 投票进行中</div></div><span class="tag tag-amber">评议中</span></div></div>
+    <div class="card" onclick="show('s24')"><div class="row"><div class="grow"><b>已结案 · 公众评议 #C2026007</b><div class="muted">「面交爽约」纠纷 · 涉款 ¥45</div><div class="muted">平台裁决：支持卖家 · 已截止</div></div><span class="tag tag-gray">已截止</span></div></div>
+    <div class="card" onclick="show('s24')"><div class="row"><div class="grow"><b>已结案 · 公众评议 #C2026006</b><div class="muted">「教材少页」纠纷 · 涉款 ¥20</div><div class="muted">平台裁决：支持买家 · 已截止</div></div><span class="tag tag-gray">已截止</span></div></div>
+    <div class="card muted" style="font-size:12px">参与资格：认证学生即可投票（信用分门槛初期=0，可配置）；案件发布前脱敏，隐藏双方身份信息，防止网暴</div>
+  </div>
+</section>
+
+<!-- ============ S24 小法庭案件详情 ============ -->
+<section class="screen" id="s24">
+  <div class="sbar"><span>9:41</span><span>100%</span></div>
+  <div class="hdr"><button class="bk" onclick="show('s23')">‹</button>案件 #C2026008</div>
+  <div class="cnt">
+    <div class="card"><span class="tag tag-amber">已结案 · 公众评议</span><span class="tag tag-gray" style="margin-left:4px">身份已脱敏</span>
+      <b style="display:block;margin-top:8px">「耳机有杂音」退款纠纷</b>
+      <p class="muted" style="margin-top:6px;font-size:12px;line-height:1.7">买家（匿名）购买二手蓝牙耳机 ¥300，收货后反映左耳有杂音，要求退款；卖家（匿名）称自用时无杂音，拒绝退款。双方提交凭证后平台介入。</p>
+      <div class="grid2" style="margin-top:8px"><div class="thumb" style="width:100%;height:64px">买家凭证</div><div class="thumb" style="width:100%;height:64px">卖家凭证</div></div>
+      <div class="muted" style="margin-top:8px;font-size:12px">平台裁决：支持买家（全额退款，佣金不计提）· 裁决已执行</div>
+    </div>
+    <div class="card"><b>全民投票（高信用用户均可参与）</b>
+      <div class="row" style="gap:6px;margin-top:10px">
+        <button class="btn-sm btn-ghost" style="flex:1" onclick="vote(this,'buyer')">支持买家</button>
+        <button class="btn-sm btn-ghost" style="flex:1" onclick="vote(this,'seller')">支持卖家</button>
+        <button class="btn-sm btn-ghost" style="flex:1" onclick="vote(this,'platform')">支持平台裁决</button>
+      </div>
+      <div style="margin-top:12px"><b>投票比例（实时）</b>
+        <div class="vote-bar" style="margin-top:6px" id="vote-bar"><div style="width:62%;background:#07c160"></div><div style="width:23%;background:#f59e0b"></div><div style="width:15%;background:#94a3b8"></div></div>
+        <div class="row" style="margin-top:6px;font-size:12px"><span>支持买家 62%（186票）</span><span style="margin-left:auto">卖家 23%（69票）</span><span style="margin-left:10px">平台 15%（45票）</span></div>
+        <div class="muted" style="margin-top:4px">与平台裁决一致率：+62%（支持买家=平台裁决方向）</div>
+      </div>
+    </div>
+    <div class="card"><b>评论区 58</b>（比例下方同步展示 · 点赞/回复）
+      <div style="margin-top:10px"><div class="row"><div class="avatar" style="width:28px;height:28px;font-size:11px">评</div><div class="grow" style="margin-left:8px"><b style="font-size:13px">围观同学A</b><div style="font-size:12px;margin-top:2px">卖家凭证只有一张图，证据不足，支持买家没毛病</div>
+        <div class="row" style="margin-top:4px"><button class="btn-sm btn-ghost" style="font-size:11px;padding:2px 8px" onclick="like(this)">❤ 32</button><span class="muted" style="margin-left:8px;font-size:11px">回复 5</span></div></div></div></div>
+      <div style="margin-top:10px"><div class="row"><div class="avatar" style="width:28px;height:28px;font-size:11px;background:linear-gradient(135deg,#f59e0b,#ef4444)">议</div><div class="grow" style="margin-left:8px"><b style="font-size:13px">围观同学B</b><div style="font-size:12px;margin-top:2px">耳机杂音可能是设备兼容问题，我遇到过，不好说谁对谁错</div>
+        <div class="row" style="margin-top:4px"><button class="btn-sm btn-ghost" style="font-size:11px;padding:2px 8px" onclick="like(this)">❤ 18</button><span class="muted" style="margin-left:8px;font-size:11px">回复 2</span></div></div></div></div>
+    </div>
+  </div>
+  <div style="position:absolute;bottom:0;left:0;right:0;background:#fff;padding:10px 12px;border-top:1px solid var(--line);display:flex;gap:8px;z-index:5">
+    <input placeholder="发表你的评议…" style="flex:1"><button class="btn-sm btn-green">发送</button>
+  </div>
+</section>
+
+<!-- ============ S25 我的主页 ============ -->
+<section class="screen" id="s25">
+  <div class="sbar"><span>9:41</span><span>100%</span></div>
+  <div class="hdr">我的</div>
+  <div class="cnt">
+    <div class="card"><div class="row"><div class="avatar" style="width:56px;height:56px;font-size:20px">李</div><div class="grow" style="margin-left:12px"><b style="font-size:16px">李同学</b><span class="tag tag-blue" style="margin-left:4px">楚雄师范学院·认证</span><span class="tag tag-green" style="margin-left:4px">校园达人</span><div class="muted" style="margin-top:4px">信用分 95 · 获赞 1.2k · 粉丝 328</div></div></div>
+      <div class="row" style="margin-top:12px;gap:8px"><button class="btn-sm btn-ghost" style="flex:1" onclick="show('s26')">信用分</button><button class="btn-sm btn-ghost" style="flex:1" onclick="show('s29')">卖家中心</button><button class="btn-sm btn-ghost" style="flex:1" onclick="show('s27')">达人中心</button></div>
+    </div>
+    <div class="card"><b>我的在售（2）</b>
+      <div class="row" style="margin-top:8px"><div class="thumb" style="width:56px;height:56px">图</div><div class="grow" style="margin-left:8px;font-size:12px"><b>尤克里里 入门琴</b><div class="muted">¥120 · 在售 · 可议价</div></div><button class="btn-sm btn-green" onclick="show('s28')">薯条推广</button></div></div>
+    <div class="card"><b>我的帖子（8）</b><div class="muted" style="margin-top:6px;font-size:12px">「二手教材怎么卖才快？」❤128 · 「开学书单分享」❤56</div></div>
+    <div class="card"><b>常用功能</b><div class="grid4" style="padding:10px 0 0">
+      <div onclick="show('s12')"><div class="ic" style="background:#3b82f6">📦</div>订单</div>
+      <div onclick="show('s14')"><div class="ic" style="background:#ef4444">↩</div>退款</div>
+      <div onclick="show('s31')"><div class="ic" style="background:#f59e0b">🔔</div>通知</div>
+      <div onclick="show('s30')"><div class="ic" style="background:#10b981">📅</div>日历</div>
+      <div onclick="show('s23')"><div class="ic" style="background:#b45309">⚖</div>小法庭</div>
+      <div onclick="show('s19')"><div class="ic" style="background:#ec4899">🌲</div>树洞</div>
+      <div><div class="ic" style="background:#8b5cf6">🤝</div>大使</div>
+      <div><div class="ic" style="background:#06b6d4">⚙</div>设置</div>
+    </div></div>
+    <div class="card muted" style="font-size:12px">隐私：学号/姓名仅用于认证比对，永不展示；默认仅显示「学校·认证」徽章（等保二级）</div>
+  </div>
+  <div class="tabbar"><div onclick="show('s04')"><span class="ic">🏠</span>首页</div><div onclick="show('s05')"><span class="ic">🛒</span>集市</div><div onclick="show('s08')"><span class="ic">▶</span>视频</div><div onclick="show('s20')"><span class="ic">💬</span>消息</div><div class="on" onclick="show('s25')"><span class="ic">👤</span>我的</div></div>
+</section>
+
+<!-- ============ S26 信用分 ============ -->
+<section class="screen" id="s26">
+  <div class="sbar"><span>9:41</span><span>100%</span></div>
+  <div class="hdr"><button class="bk" onclick="show('s25')">‹</button>我的信用分</div>
+  <div class="cnt">
+    <div class="card" style="text-align:center"><div style="font-size:44px;font-weight:700;color:#07c160">95</div><div class="muted">信用良好 · 高于 40 分门槛，可发布/担保交易</div>
+      <div class="vote-bar" style="margin-top:10px"><div style="width:63%;background:#07c160"></div></div><div class="muted" style="margin-top:4px">满分 150</div></div>
+    <div class="card"><b>加减分规则</b><div class="muted" style="margin-top:6px;font-size:12px;line-height:1.8">＋20 实名认证｜＋50/单 交易履约｜−30/次 被投诉｜−50/次 仲裁判负<br>低于 40：禁止发布与担保交易（参数可配置）</div></div>
+    <div class="card"><b>流水明细</b>
+      <div class="row" style="margin-top:8px;font-size:13px"><span>交易履约 · iPad 订单</span><span style="margin-left:auto;color:#07c160">+50</span></div>
+      <div class="row" style="margin-top:8px;font-size:13px"><span>实名认证</span><span style="margin-left:auto;color:#07c160">+20</span></div>
+      <div class="row" style="margin-top:8px;font-size:13px"><span>被投诉 · 面交迟到</span><span style="margin-left:auto;color:#ef4444">−30</span></div>
+      <div class="row" style="margin-top:8px;font-size:13px"><span>交易履约 · 教材订单</span><span style="margin-left:auto;color:#07c160">+50</span></div>
+    </div>
+    <div class="card muted" style="font-size:12px">信用分同时作为商品排序权重与卖家徽章展示（高信用卖家排前）</div>
+  </div>
+</section>
+
+<!-- ============ S27 达人中心（蒲公英接单） ============ -->
+<section class="screen" id="s27">
+  <div class="sbar"><span>9:41</span><span>100%</span></div>
+  <div class="hdr"><button class="bk" onclick="show('s25')">‹</button>达人中心</div>
+  <div class="cnt">
+    <div class="card"><div class="row"><div class="grow"><b>校园达人 · Lv2</b><div class="muted">内容榜第 12 名 · 可接单任务</div></div><span class="tag tag-green">KOC 认证</span></div></div>
+    <div class="card"><div class="row"><div class="grow"><b>任务：驾校开学季种草贴</b><div class="muted">广告主：楚雄腾龙驾校 · 需图文 1 篇</div><div class="muted">报酬 ¥150 · 平台抽成 15%（¥22.5）· 到手 ¥127.5</div></div><button class="btn-sm btn-green">接单</button></div></div>
+    <div class="card"><div class="row"><div class="grow"><b>任务：图书馆咖啡店新品试喝</b><div class="muted">广告主：校内咖啡店 · 视频 1 条</div><div class="muted">报酬 ¥80 · 到手 ¥68</div></div><button class="btn-sm btn-green">接单</button></div></div>
+    <div class="card muted" style="font-size:12px">蒲公英模式：商家发任务 → 达人接单产内容 → 平台抽佣（默认 15%，配置中心可调）→ 结算到卖家账户</div>
+  </div>
+</section>
+
+<!-- ============ S28 薯条推广 ============ -->
+<section class="screen" id="s28">
+  <div class="sbar"><span>9:41</span><span>100%</span></div>
+  <div class="hdr"><button class="bk" onclick="show('s25')">‹</button>薯条推广</div>
+  <div class="cnt">
+    <div class="card"><div class="row"><div class="thumb" style="width:56px;height:56px">图</div><div class="grow" style="margin-left:8px"><b>尤克里里 入门琴</b><div class="muted">¥120 · 在售</div></div></div></div>
+    <div class="card"><b>选择曝光量（CPM 计费，单价 ¥10/千次）</b>
+      <div class="grid2" style="margin-top:10px">
+        <div class="card" style="margin:0;text-align:center;border:1px solid var(--line)"><b>500 次</b><div class="muted">¥5</div></div>
+        <div class="card" style="margin:0;text-align:center;border:2px solid #07c160"><b>1000 次</b><div class="muted">¥10</div></div>
+        <div class="card" style="margin:0;text-align:center;border:1px solid var(--line)"><b>3000 次</b><div class="muted">¥30</div></div>
+        <div class="card" style="margin:0;text-align:center;border:1px solid var(--line)"><b>5000 次</b><div class="muted">¥50</div></div>
+      </div>
+    </div>
+    <div class="card muted" style="font-size:12px">投放渠道：本校 Feed + 同专业推荐位；按实际曝光扣费，投放完成后可查看曝光报告（CPM 单价配置中心可调）</div>
+    <button class="btn btn-green" onclick="alert('薯条订单已创建，支付后开始投放')">立即推广 ¥10</button>
+  </div>
+</section>
+
+<!-- ============ S29 卖家中心 ============ -->
+<section class="screen" id="s29">
+  <div class="sbar"><span>9:41</span><span>100%</span></div>
+  <div class="hdr"><button class="bk" onclick="show('s25')">‹</button>卖家中心</div>
+  <div class="cnt">
+    <div class="card"><div class="row"><div class="grow"><span class="muted">账户余额（已结算）</span><div style="font-size:26px;font-weight:700">¥1746.00</div></div><button class="btn-sm btn-green" onclick="alert('提现申请已提交：\nT+1 打款到微信零钱\n手续费 0.1%（¥1.75，可配置）')">提现</button></div></div>
+    <div class="card"><b>佣金账单</b>
+      <div class="row" style="margin-top:8px;font-size:13px"><span>iPad 订单 · 09-12</span><span style="margin-left:auto">成交 ¥1800</span><span style="margin-left:10px;color:#ef4444">佣金 −¥54</span></div>
+      <div class="row" style="margin-top:6px;font-size:13px"><span>教材订单 · 09-10</span><span style="margin-left:auto">成交 ¥30</span><span style="margin-left:10px;color:#ef4444">佣金 −¥0.3</span></div>
+      <div class="muted" style="margin-top:8px;font-size:12px">佣金率取成交时快照（3% / 教材 1%）；结算：确认收货后微信分账 → T+1 到账</div>
+    </div>
+    <div class="card"><b>在售管理</b><div class="row" style="margin-top:8px"><div class="thumb" style="width:56px;height:56px">图</div><div class="grow" style="margin-left:8px;font-size:12px"><b>尤克里里</b><div class="muted">曝光 328 · 收藏 12</div></div><button class="btn-sm btn-ghost">下架</button><button class="btn-sm btn-green" style="margin-left:6px" onclick="show('s28')">薯条</button></div></div>
+    <div class="card muted" style="font-size:12px">提现需通过财务审核（后台财务角色），审核记录留痕</div>
+  </div>
+</section>
+
+<!-- ============ S30 运营日历 ============ -->
+<section class="screen" id="s30">
+  <div class="sbar"><span>9:41</span><span>100%</span></div>
+  <div class="hdr">校园运营日历</div>
+  <div class="cnt">
+    <div class="banner" style="background:linear-gradient(135deg,#ea580c,#f59e0b)">9 月 · 开学教材季 🔥<br><span style="font-size:12px;opacity:.85">教材类 1% 佣金 · 新帖曝光翻倍 · 秒杀专区</span></div>
+    <div class="card"><b>全年节奏</b>
+      <div class="muted" style="margin-top:8px;font-size:12px;line-height:2">8-9 月 开学教材季：1% 佣金 + 新生活动<br>11 月 双十一旧物节：薯条 5 折<br>12-1 月 期末笔记季：笔记/资料专区<br>3 月 春季换新季<br>5-6 月 毕业甩卖季：免佣活动开关（配置中心）</div></div>
+    <div class="card"><b>同专业推荐位（转化率最高场景）</b>
+      <div class="row" style="margin-top:8px"><div class="thumb" style="width:56px;height:56px">书</div><div class="grow" style="margin-left:8px;font-size:12px"><b>「同专业学长在卖」数据结构 严蔚敏</b><div class="muted">计科 21 级 · ¥18 · 同专业标签召回</div></div></div></div>
+    <div class="card"><b>校园大使招募</b><p class="muted" style="margin-top:6px;font-size:12px">每校 1 名：地推 + 内容初审 + 活动组织；报酬 = 佣金分成 + 实习证明（分成比例配置中心可调）</p></div>
+  </div>
+</section>
+
+<!-- ============ S31 消息通知 ============ -->
+<section class="screen" id="s31">
+  <div class="sbar"><span>9:41</span><span>100%</span></div>
+  <div class="hdr">通知中心</div>
+  <div class="cnt">
+    <div class="card"><div class="row"><div class="grow"><b>交易通知</b><div class="muted">你的订单已支付成功，请准备面交</div><div class="muted">11:53</div></div><span class="tag tag-red" style="flex-shrink:0">未读</span></div></div>
+    <div class="card"><div class="row"><div class="grow"><b>审核通知</b><div class="muted">你的商品「尤克里里」已通过审核并上架</div><div class="muted">昨天</div></div></div></div>
+    <div class="card"><div class="row"><div class="grow"><b>社区通知</b><div class="muted">你关注的「考研上岸互助圈」有新活动</div><div class="muted">昨天</div></div></div></div>
+    <div class="card muted" style="font-size:12px">订阅消息按次授权（微信模板消息规范），不轰炸；站内信兜底</div>
+  </div>
+</section>
+
+<!-- ============ S40 后台登录 ============ -->
+<section class="screen" id="s40">
+  <div class="cnt" style="padding:60px 24px">
+    <div style="text-align:center;margin-bottom:30px"><div style="font-size:26px;font-weight:700">校集 · 运营后台</div><div class="muted" style="margin-top:6px">RBAC 五角色：超管 / 运营 / 审核 / 客服 / 财务</div></div>
+    <div class="card"><input placeholder="账号" style="margin-bottom:8px"><input type="password" placeholder="密码"><button class="btn btn-blue" style="margin-top:10px" onclick="show('s41')">登录（超级管理员）</button></div>
+    <div class="card muted" style="font-size:12px">所有后台操作留痕（操作日志表），费率配置仅超管可改并记审计</div>
+  </div>
+</section>
+
+<!-- ============ S41 后台数据看板 ============ -->
+<section class="screen" id="s41">
+  <div class="sbar"><span>9:41</span><span>后台</span></div>
+  <div class="hdr">数据看板</div>
+  <div class="cnt">
+    <div class="kpi">
+      <div class="card"><p>71,240</p><span class="muted">DAU</span></div>
+      <div class="card"><p>¥12.8万</p><span class="muted">本周 GMV</span></div>
+      <div class="card"><p>¥3,846</p><span class="muted">本周抽佣收入</span></div>
+      <div class="card"><p>¥9,210</p><span class="muted">本周广告收入</span></div>
+    </div>
+    <div class="card"><b>学校健康度 TOP3</b>
+      <div class="muted" style="margin-top:8px;font-size:12px;line-height:1.9">1 楚雄师范学院 · 在售 3,215 · 日帖 1,280<br>2 云南大学 · 在售 5,892 · 日帖 2,014<br>3 昆明理工大学 · 在售 4,106 · 日帖 1,566</div></div>
+    <div class="card"><b>快速入口</b>
+      <div class="row" style="gap:6px;margin-top:8px"><button class="btn-sm btn-blue" style="flex:1" onclick="show('s42')">认证审核</button><button class="btn-sm btn-blue" style="flex:1" onclick="show('s43')">内容审核</button><button class="btn-sm btn-blue" style="flex:1" onclick="show('s46')">工单</button></div>
+      <div class="row" style="gap:6px;margin-top:6px"><button class="btn-sm btn-blue" style="flex:1" onclick="show('s45')">配置中心</button><button class="btn-sm btn-blue" style="flex:1" onclick="show('s44')">广告管理</button><button class="btn-sm btn-blue" style="flex:1" onclick="show('s47')">财务对账</button></div>
+      <div class="row" style="gap:6px;margin-top:6px"><button class="btn-sm" style="flex:1;background:#b45309;color:#fff" onclick="show('s48')">小法庭对比看板</button></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ S42 用户与认证审核 ============ -->
+<section class="screen" id="s42">
+  <div class="sbar"><span>9:41</span><span>后台</span></div>
+  <div class="hdr"><button class="bk" onclick="show('s41')">‹</button>认证审核</div>
+  <div class="cnt">
+    <div class="tabs"><span class="on">待审 12</span><span>已通过</span><span>已驳回</span></div>
+    <div class="card"><div class="row"><div class="avatar">王</div><div class="grow" style="margin-left:8px"><b>王同学</b><div class="muted">楚雄师范学院 · 学号+姓名核验</div><div class="muted">白名单比对：通过 ✓</div></div><button class="btn-sm btn-green" onclick="alert('已通过：用户获得校徽认证 + 信用分+20')">通过</button></div></div>
+    <div class="card"><div class="row"><div class="avatar" style="background:linear-gradient(135deg,#06b6d4,#3b82f6)">赵</div><div class="grow" style="margin-left:8px"><b>赵同学</b><div class="muted">云南大学 · 学生证 OCR</div><div class="muted">OCR 识别置信度 86% · 待人工复审</div></div><button class="btn-sm btn-green">通过</button><button class="btn-sm" style="background:#ef4444;color:#fff;margin-left:4px">驳回</button></div></div>
+    <div class="card"><b>用户管理</b><div class="muted" style="margin-top:6px;font-size:12px">禁言 / 封号 / 信用分调整 / 毕业降级（定时任务）查看</div>
+      <div class="row" style="margin-top:8px"><input placeholder="搜索用户手机号/昵称"><button class="btn-sm btn-blue" style="margin-left:6px">搜索</button></div></div>
+  </div>
+</section>
+
+<!-- ============ S43 内容审核队列 ============ -->
+<section class="screen" id="s43">
+  <div class="sbar"><span>9:41</span><span>后台</span></div>
+  <div class="hdr"><button class="bk" onclick="show('s41')">‹</button>内容审核</div>
+  <div class="cnt">
+    <div class="tabs"><span class="on">商品 8</span><span>帖子 23</span><span>评论 41</span></div>
+    <div class="card"><div class="row"><div class="thumb" style="width:56px;height:56px">图</div><div class="grow" style="margin-left:8px"><b>「AirPods Pro 2代」</b><div class="muted">数码 · ¥900 · 触发词：无</div><div class="muted">图片 AI 审核：通过</div></div><button class="btn-sm btn-green">通过</button><button class="btn-sm" style="background:#ef4444;color:#fff;margin-left:4px">驳回</button></div></div>
+    <div class="card"><div class="row"><div class="thumb" style="width:56px;height:56px;background:#fee2e2;color:#b91c1c">图</div><div class="grow" style="margin-left:8px"><b>「低价出烟」</b><div class="muted">生活 · 触发违禁词库：香烟</div><div class="muted" style="color:#b91c1c">违禁品：直接下架并警告卖家</div></div><button class="btn-sm" style="background:#ef4444;color:#fff">下架</button></div></div>
+    <div class="card muted" style="font-size:12px">审核通道：敏感词过滤 → 图片 AI 审核 → 人工抽检复核；违禁品词库（烟酒/管制刀具/处方药/活体动物）</div>
+  </div>
+</section>
+
+<!-- ============ S44 广告管理 ============ -->
+<section class="screen" id="s44">
+  <div class="sbar"><span>9:41</span><span>后台</span></div>
+  <div class="hdr"><button class="bk" onclick="show('s41')">‹</button>广告管理</div>
+  <div class="cnt">
+    <div class="card"><b>＋ 新建广告（后台直发）</b>
+      <input placeholder="广告标题" style="margin-top:8px">
+      <select style="margin-top:6px"><option>广告位：开屏</option><option>信息流（第4/9位）</option><option>帖子详情横幅</option><option>搜索位</option><option>集市轮播</option><option>圈子置顶</option></select>
+      <select style="margin-top:6px"><option>计费：CPM 曝光</option><option>CPC 点击</option></select>
+      <input placeholder="出价（元）" style="margin-top:6px">
+      <input placeholder="频控：同用户日曝光上限（默认3）" style="margin-top:6px">
+      <div class="muted" style="margin-top:6px;font-size:12px">来源：广告商提交审核 / 线下约谈直发（当前）</div>
+      <button class="btn btn-blue" style="margin-top:8px" onclick="alert('广告已直发：投放中\n扣费按 CPM/CPC 实时从广告主余额扣取')">发布</button>
+    </div>
+    <div class="card"><b>投放中（4）</b>
+      <div class="muted" style="margin-top:8px;font-size:12px;line-height:2">· 楚雄书城 · 开屏 · CPM ¥5 · 已投 12万曝光<br>· 腾龙驾校 · 信息流 · CPC ¥0.3 · 点击 1,204<br>· 上岸考研 · 信息流 · CPC ¥0.5 · 点击 862</div></div>
+    <div class="card"><b>行业黑名单（审核参考词库）</b><div class="muted" style="margin-top:6px;font-size:12px">校园贷 / 医美 / 游戏代练 / 刷单 / 烟草酒类……命中即驳回</div></div>
+  </div>
+</section>
+
+<!-- ============ S45 平台配置中心 ============ -->
+<section class="screen" id="s45">
+  <div class="sbar"><span>9:41</span><span>后台</span></div>
+  <div class="hdr"><button class="bk" onclick="show('s41')">‹</button>平台配置中心（超管）</div>
+  <div class="cnt">
+    <div class="card"><b>费率参数</b>
+      <div class="muted" style="margin-top:8px;font-size:12px;line-height:2.2">
+        <div class="row"><span>担保佣金率</span><input value="3" style="width:60px;text-align:right"><span>%</span></div>
+        <div class="row" style="margin-top:4px"><span>教材佣金率</span><input value="1" style="width:60px;text-align:right"><span>%</span></div>
+        <div class="row" style="margin-top:4px"><span>提现手续费</span><input value="0.1" style="width:60px;text-align:right"><span>%</span></div>
+        <div class="row" style="margin-top:4px"><span>广告 CPM 底价</span><input value="5" style="width:60px;text-align:right"><span>元/千次</span></div>
+        <div class="row" style="margin-top:4px"><span>薯条 CPM</span><input value="10" style="width:60px;text-align:right"><span>元/千次</span></div>
+        <div class="row" style="margin-top:4px"><span>达人接单抽成</span><input value="15" style="width:60px;text-align:right"><span>%</span></div>
+      </div>
+    </div>
+    <div class="card"><b>规则参数</b>
+      <div class="muted" style="margin-top:8px;font-size:12px;line-height:2.2">
+        <div class="row"><span>待付款关单</span><input value="24" style="width:60px;text-align:right"><span>小时</span></div>
+        <div class="row" style="margin-top:4px"><span>快递自动确认</span><input value="10" style="width:60px;text-align:right"><span>天</span></div>
+        <div class="row" style="margin-top:4px"><span>面交自动确认</span><input value="24" style="width:60px;text-align:right"><span>小时</span></div>
+        <div class="row" style="margin-top:4px"><span>新帖保底曝光</span><input value="50" style="width:60px;text-align:right"><span>~100次</span></div>
+        <div class="row" style="margin-top:4px"><span>小法庭一致率阈值</span><input value="80" style="width:60px;text-align:right"><span>%</span></div>
+        <div class="row" style="margin-top:4px"><span>小法庭最少样本</span><input value="100" style="width:60px;text-align:right"><span>件</span></div>
+      </div>
+      <button class="btn btn-green" style="margin-top:10px" onclick="alert('已保存并生效\n审计日志已记录：操作人/改前值/改后值/时间\n历史订单按成交时费率快照冻结，不追溯')">保存全部修改</button>
+    </div>
+    <div class="card"><b>审计日志（最近）</b>
+      <div class="muted" style="margin-top:8px;font-size:12px;line-height:1.9">09-10 14:22 超管admin 佣金率 3%→3.5%（促销后改回）<br>09-08 10:05 超管admin 免佣开关 0→1（毕业季）<br>09-01 09:00 超管admin 教材佣金率 1%→1%</div></div>
+  </div>
+</section>
+
+<!-- ============ S46 工单系统 ============ -->
+<section class="screen" id="s46">
+  <div class="sbar"><span>9:41</span><span>后台</span></div>
+  <div class="hdr"><button class="bk" onclick="show('s41')">‹</button>工单系统</div>
+  <div class="cnt">
+    <div class="tabs"><span>交易纠纷 3</span><span class="on">举报 5</span><span>认证申诉 2</span></div>
+    <div class="card"><div class="row"><div class="grow"><b>#R202609001 帖内辱骂</b><div class="muted">目标：帖子#88231 · 举报人已匿名</div><div class="muted" style="color:#f59e0b">SLA 剩余：31 小时（48h 时限）</div></div><button class="btn-sm btn-green">处理</button></div></div>
+    <div class="card"><div class="row"><div class="grow"><b>#R202609002 虚假商品信息</b><div class="muted">目标：商品#45120 · 附 2 张凭证</div><div class="muted" style="color:#ef4444">SLA 剩余：6 小时</div></div><button class="btn-sm btn-green">处理</button></div></div>
+    <div class="card muted" style="font-size:12px">三通道：交易纠纷（关联订单/分账冻结）/ 举报（关联内容）/ 认证申诉（关联认证记录）；超时自动升级提醒，处理留痕</div>
+  </div>
+</section>
+
+<!-- ============ S47 财务对账 ============ -->
+<section class="screen" id="s47">
+  <div class="sbar"><span>9:41</span><span>后台</span></div>
+  <div class="hdr"><button class="bk" onclick="show('s41')">‹</button>财务对账</div>
+  <div class="cnt">
+    <div class="card"><b>分账流水（微信收付通）</b>
+      <div class="muted" style="margin-top:8px;font-size:12px;line-height:2">· 09-12 XJ...001 卖家 ¥1746 / 平台 ¥54 分账成功<br>· 09-12 XJ...002 卖家 ¥29.7 / 平台 ¥0.3 分账成功<br>· 09-11 XJ...009 退款 ¥45 原路退回 成功</div></div>
+    <div class="card"><b>佣金账单（T+1 批处理）</b><div class="muted" style="margin-top:8px;font-size:12px">昨日佣金合计 ¥612.8 · 已与分账流水对平 ✓</div></div>
+    <div class="card"><b>提现审核</b>
+      <div class="row" style="margin-top:8px"><div class="grow"><b>陈同学 ¥1746.00</b><div class="muted">T+1 · 手续费 ¥1.75（0.1%）</div></div><button class="btn-sm btn-green">通过打款</button><button class="btn-sm" style="background:#ef4444;color:#fff;margin-left:4px">驳回</button></div></div>
+  </div>
+</section>
+
+<!-- ============ S48 小法庭对比看板 ============ -->
+<section class="screen" id="s48">
+  <div class="sbar"><span>9:41</span><span>后台</span></div>
+  <div class="hdr"><button class="bk" onclick="show('s41')">‹</button>小法庭对比看板</div>
+  <div class="cnt">
+    <div class="kpi">
+      <div class="card"><p>78.6%</p><span class="muted">本月一致率</span></div>
+      <div class="card"><p>214</p><span class="muted">累计评议案件</span></div>
+      <div class="card"><p>6,820</p><span class="muted">累计投票人次</span></div>
+      <div class="card"><p>3/4</p><span class="muted">达标周数/连续4周</span></div>
+    </div>
+    <div class="card"><b>切换进度（影子评审 → 裁决模式）</b>
+      <div class="vote-bar" style="margin-top:8px"><div style="width:78%;background:#07c160"></div></div>
+      <div class="muted" style="margin-top:6px;font-size:12px">条件：连续 4 周一致率 ≥80% 且样本 ≥100 件<br>当前：样本已达标，一致率差 1.4% · 达标后争议案件交全民投票裁决、平台执行+兜底</div></div>
+    <div class="card"><b>近 4 周一致率</b>
+      <div class="muted" style="margin-top:8px;font-size:12px;line-height:2">W36 81.2% ✓｜W35 79.8% ✗｜W34 82.5% ✓｜W33 80.9% ✓</div></div>
+    <div class="card muted" style="font-size:12px">对比口径：投票多数方（买家/卖家）与平台裁决方向是否一致；支持平台裁决的票计入多数方向统计</div>
+  </div>
+</section>
+
+    </div>
+    <div class="foot-note" id="footnote2" style="display:none">后台原型 · 切换左侧「学生端」返回</div>
+  </div>
+</div>
+<script>
+var NAVS={
+ stu:[
+  {g:'需求闭环',items:[['s00','需求闭环对照表']]},
+  {g:'启动与认证',items:[['s01','开屏广告（广告位）'],['s02','微信登录'],['s03','校园认证三选一']]},
+  {g:'集市交易',items:[['s04','首页 Feed（信息流广告）'],['s05','集市首页（搜索/筛选）'],['s06','商品详情（信用徽章）'],['s07','发布商品（AI助手）'],['s08','短视频集市（挂车）'],['s09','下单确认（佣金提示）'],['s10','微信支付（收付通）'],['s11','面交核销码'],['s12','订单列表（倒计时）'],['s13','订单详情（状态机）'],['s14','退款申请（原路退回）']]},
+  {g:'社区圈子',items:[['s15','圈子列表（三类）'],['s16','圈子主页（圈主管理）'],['s17','帖子详情（楼中楼/热度）'],['s18','发帖（五形态）'],['s19','树洞/表白墙']]},
+  {g:'聊天社交',items:[['s20','聊天列表'],['s21','单聊（商品卡片）'],['s22','群聊（@提醒）']]},
+  {g:'校园小法庭',items:[['s23','小法庭频道（影子评议）'],['s24','案件详情（投票+评论区）']]},
+  {g:'我的与变现',items:[['s25','我的主页'],['s26','信用分'],['s27','达人中心（蒲公英）'],['s28','薯条推广'],['s29','卖家中心（佣金/提现）'],['s30','运营日历'],['s31','消息通知']]}
+ ],
+ back:[
+  {g:'后台端（RBAC）',items:[['s40','后台登录'],['s41','数据看板'],['s42','用户与认证审核'],['s43','内容审核队列'],['s44','广告管理（直发）'],['s45','平台配置中心（超管）'],['s46','工单系统（48h SLA）'],['s47','财务对账'],['s48','小法庭对比看板']]}
+ ]
+};
+var nav=document.getElementById('nav');
+function renderNav(mode){
+  nav.innerHTML='';
+  NAVS[mode].forEach(function(grp){
+    var h=document.createElement('div');h.className='nav-g';h.textContent=grp.g;nav.appendChild(h);
+    grp.items.forEach(function(it){
+      var b=document.createElement('button');b.className='nav-item';b.textContent=it[1];
+      b.onclick=function(){show(it[0])};b.dataset.target=it[0];nav.appendChild(b);
+    });
+  });
+}
+function seg(mode){
+  document.getElementById('seg-stu').className=mode==='stu'?'on':'';
+  document.getElementById('seg-back').className=mode==='back'?'on':'';
+  renderNav(mode);
+  show(mode==='stu'?'s04':'s41');
+}
+function show(id){
+  document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active')});
+  var el=document.getElementById(id);if(el)el.classList.add('active');
+  document.getElementById('screen-scroll').scrollTop=0;
+  document.querySelectorAll('.nav-item').forEach(function(b){b.classList.toggle('on',b.dataset.target===id)});
+}
+function go(el){show(el.dataset.go)}
+document.addEventListener('click',function(e){
+  var g=e.target.closest('[data-go]');if(g){show(g.dataset.go)}
+});
+function like(el){var n=parseInt(el.textContent.replace(/[^0-9]/g,''))||0;el.textContent='❤ '+(n+1)}
+function authGo(){document.getElementById('auth-form').style.display='block'}
+function authDone(){document.getElementById('auth-form').style.display='none';document.getElementById('auth-ok').style.display='block'}
+function payOk(){alert('支付成功！\n资金进入微信收付通担保账户\n平台不触碰资金');show('s11')}
+function confirmDone(){alert('确认收货成功！\n触发微信分账：卖家 97% / 平台 3%\n佣金账单已生成，卖家 T+1 可提现');show('s12')}
+function vote(btn,who){
+  var bar=document.getElementById('vote-bar');
+  if(who==='buyer')bar.innerHTML='<div style="width:63%;background:#07c160"></div><div style="width:23%;background:#f59e0b"></div><div style="width:14%;background:#94a3b8"></div>';
+  if(who==='seller')bar.innerHTML='<div style="width:61%;background:#07c160"></div><div style="width:24%;background:#f59e0b"></div><div style="width:15%;background:#94a3b8"></div>';
+  if(who==='platform')bar.innerHTML='<div style="width:62%;background:#07c160"></div><div style="width:22%;background:#f59e0b"></div><div style="width:16%;background:#94a3b8"></div>';
+  btn.textContent='已投票 ✓';
+  alert('投票成功（信用分加权 1.5× 可选）\n你的投票已计入案件对比统计');
+}
+renderNav('stu');
+show('s00');
+</script>
+</body>
+</html>
+
+    </div>
+  </div>
+</div>
+<script>
+</script>
+</body>
+</html>
