@@ -81,7 +81,8 @@ body{background:linear-gradient(160deg,#F0F3FF 0%,#F7F4FF 55%,#FDF2F8 100%);over
 .seg::-webkit-scrollbar{display:none}
 .seg span{font-size:14px;color:#8A90A6;padding-bottom:6px;position:relative;cursor:pointer;flex:none}
 .seg span.on{color:var(--ink);font-weight:700}
-.seg span.on::after{content:"";position:absolute;left:50%;transform:translateX(-50%);bottom:0;width:18px;height:3px;border-radius:2px;background:var(--grad)}
+.seg span::after{content:"";position:absolute;left:50%;transform:translateX(-50%) scaleX(0);bottom:0;width:18px;height:3px;border-radius:2px;background:var(--grad);transition:transform .3s cubic-bezier(.22,.9,.3,1)}
+.seg span.on::after{transform:translateX(-50%) scaleX(1)}
 .chips{display:flex;gap:8px;overflow-x:auto;padding:12px 14px 4px;scrollbar-width:none}
 .chips::-webkit-scrollbar{display:none}
 .chip{flex:none;padding:7px 14px;border-radius:999px;background:#fff;border:1px solid #E7E9F3;font-size:12.5px;color:#4A5070;cursor:pointer}
@@ -159,8 +160,97 @@ body{background:linear-gradient(160deg,#F0F3FF 0%,#F7F4FF 55%,#FDF2F8 100%);over
 .tbtn svg{width:23px;height:23px}
 .tbtn.on{color:var(--brand)}
 .fab{position:absolute;bottom:46px;left:50%;transform:translateX(-50%);width:52px;height:52px;border-radius:50%;background:var(--grad);color:#fff;font-size:28px;font-weight:300;border:4px solid #fff;box-shadow:0 10px 24px rgba(88,101,242,.45);z-index:61;cursor:pointer;display:grid;place-items:center;line-height:1;padding:0 0 3px}
-.toast{position:absolute;bottom:112px;left:50%;transform:translateX(-50%) translateY(8px);background:rgba(17,20,40,.88);color:#fff;font-size:12.5px;padding:9px 16px;border-radius:10px;opacity:0;pointer-events:none;transition:.25s;z-index:90;white-space:nowrap;max-width:88%;overflow:hidden;text-overflow:ellipsis}
+.toast{position:absolute;bottom:112px;left:50%;transform:translateX(-50%) translateY(16px) scale(.92);background:rgba(17,20,40,.88);color:#fff;font-size:12.5px;padding:9px 16px;border-radius:10px;opacity:0;pointer-events:none;transition:.4s cubic-bezier(.34,1.56,.64,1);z-index:90;white-space:nowrap;max-width:88%;overflow:hidden;text-overflow:ellipsis}
 .toast.show{opacity:1;transform:translateX(-50%)}
+/* ================= 动效系统 ================= */
+:root{--ez:cubic-bezier(.22,.9,.3,1);--sp:cubic-bezier(.34,1.56,.64,1)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}}
+@keyframes fadeIn{from{opacity:0}}
+@keyframes popIn{from{opacity:0;transform:scale(.82)}}
+@keyframes heartPop{0%{transform:scale(1)}45%{transform:scale(1.5)}100%{transform:scale(1)}}
+@keyframes tabBounce{0%{transform:scale(.7)}55%{transform:scale(1.22)}100%{transform:scale(1)}}
+@keyframes fabPulse{0%,100%{box-shadow:0 10px 24px rgba(88,101,242,.42)}50%{box-shadow:0 12px 34px rgba(88,101,242,.72)}}
+@keyframes shineMove{0%{left:-70%}55%,100%{left:135%}}
+@keyframes growX{from{transform:scaleX(0)}}
+@keyframes growUp{from{transform:scaleY(0)}}
+@keyframes bubIn{from{opacity:0;transform:translateY(12px) scale(.94)}}
+@keyframes heroIn{from{opacity:0;transform:scale(1.06)}}
+@keyframes ring{0%{transform:scale(.85);opacity:.75}100%{transform:scale(1.55);opacity:0}}
+
+/* 入场：屏幕顶层子元素交错浮现（进入屏幕时触发一次） */
+.app-screen.entering>.sti{animation:fadeUp .55s var(--ez) backwards}
+.app-screen.entering>.sti:nth-child(2){animation-delay:.06s}
+.app-screen.entering>.sti:nth-child(3){animation-delay:.12s}
+.app-screen.entering>.sti:nth-child(4){animation-delay:.18s}
+.app-screen.entering>.sti:nth-child(5){animation-delay:.24s}
+.app-screen.entering>.sti:nth-child(6){animation-delay:.3s}
+.app-screen.entering>.sti:nth-child(7){animation-delay:.36s}
+.app-screen.entering>.sti:nth-child(n+8){animation-delay:.42s}
+/* 列表子项交错 */
+.app-screen.entering [data-stag]>*,.app-screen.entering .stag>*{animation:fadeUp .5s var(--ez) backwards}
+.app-screen.entering [data-stag]>*:nth-child(2),.app-screen.entering .stag>*:nth-child(2){animation-delay:.07s}
+.app-screen.entering [data-stag]>*:nth-child(3),.app-screen.entering .stag>*:nth-child(3){animation-delay:.14s}
+.app-screen.entering [data-stag]>*:nth-child(4),.app-screen.entering .stag>*:nth-child(4){animation-delay:.21s}
+.app-screen.entering [data-stag]>*:nth-child(5),.app-screen.entering .stag>*:nth-child(5){animation-delay:.28s}
+.app-screen.entering [data-stag]>*:nth-child(6),.app-screen.entering .stag>*:nth-child(6){animation-delay:.35s}
+.app-screen.entering [data-stag]>*:nth-child(7),.app-screen.entering .stag>*:nth-child(7){animation-delay:.42s}
+.app-screen.entering [data-stag]>*:nth-child(n+8),.app-screen.entering .stag>*:nth-child(n+8){animation-delay:.49s}
+/* 头部只淡入不位移（sticky 兼容） */
+.app-screen.entering>.sti.app-head,.app-screen.entering>.sti[style*="position:sticky"]{animation:fadeIn .45s var(--ez) backwards}
+/* 状态机时间线逐级点亮 */
+.app-screen.entering .tl-item{animation:fadeUp .45s var(--ez) backwards}
+.app-screen.entering .tl-item:nth-child(2){animation-delay:.14s}
+.app-screen.entering .tl-item:nth-child(3){animation-delay:.28s}
+.app-screen.entering .tl-item:nth-child(4){animation-delay:.42s}
+/* 核销码数字逐位弹出 */
+.app-screen.entering .codebox i{animation:popIn .45s var(--sp) backwards}
+.app-screen.entering .codebox i:nth-child(2){animation-delay:.06s}
+.app-screen.entering .codebox i:nth-child(3){animation-delay:.12s}
+.app-screen.entering .codebox i:nth-child(4){animation-delay:.18s}
+.app-screen.entering .codebox i:nth-child(5){animation-delay:.24s}
+.app-screen.entering .codebox i:nth-child(6){animation-delay:.3s}
+/* 聊天气泡弹出 */
+.app-screen.entering #chatMsgs .bub{animation:bubIn .45s var(--sp) backwards}
+.app-screen.entering #chatMsgs .bub:nth-child(2){animation-delay:.09s}
+.app-screen.entering #chatMsgs .bub:nth-child(3){animation-delay:.18s}
+.app-screen.entering #chatMsgs .bub:nth-child(n+4){animation-delay:.27s}
+/* 支付成功徽章 + 双层涟漪 */
+.app-screen.entering #s10-payok .pop{animation:popIn .6s var(--sp) .12s backwards;position:relative}
+.pop::before,.pop::after{content:"";position:absolute;inset:-8px;border-radius:50%;border:2px solid rgba(255,255,255,.55);opacity:0;animation:ring 1.8s ease-out .5s infinite;pointer-events:none}
+.pop::after{animation-delay:1.4s}
+/* 商品详情主图变焦入场 */
+.app-screen.entering #gd-body>div:first-child{animation:heroIn .55s var(--ez) backwards}
+/* 看板柱状图生长 */
+.app-screen.entering .chartbar{animation:growUp .75s var(--ez) backwards;transform-origin:bottom}
+.app-screen.entering .chartbar:nth-child(2){animation-delay:.08s}
+.app-screen.entering .chartbar:nth-child(3){animation-delay:.16s}
+.app-screen.entering .chartbar:nth-child(4){animation-delay:.24s}
+.app-screen.entering .chartbar:nth-child(5){animation-delay:.32s}
+.app-screen.entering .chartbar:nth-child(6){animation-delay:.4s}
+.app-screen.entering .chartbar:nth-child(7){animation-delay:.48s}
+/* 所有进度条生长 */
+.app-screen.entering .bar i{animation:growX .9s var(--ez) .15s backwards;transform-origin:left}
+.bar3 .bar i{transition:width .7s var(--ez)}
+/* 卡片悬浮上浮 */
+.post,.gcard,.card{transition:transform .22s var(--ez),box-shadow .25s var(--ez)}
+.post:hover,.gcard:hover{transform:translateY(-3px);box-shadow:0 14px 30px rgba(28,32,48,.1)}
+/* 按钮按压反馈 */
+button{transition:transform .12s var(--ez)}
+button:active{transform:scale(.95)}
+.fab{animation:fabPulse 2.8s ease-in-out infinite}
+.fab:active{transform:translateX(-50%) scale(.9)}
+/* 点赞心跳 */
+.lbtn.liked{animation:heartPop .4s var(--sp)}
+/* Tab 图标弹跳 */
+.tbtn.on svg{animation:tabBounce .45s var(--sp)}
+/* Banner 广告流光 */
+.banner-ad{overflow:hidden}
+.banner-ad::after{content:"";position:absolute;top:-10%;bottom:-10%;width:36%;left:-70%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.32),transparent);transform:skewX(-18deg);animation:shineMove 3.6s ease-in-out infinite;pointer-events:none}
+/* 屏幕切换更柔滑 */
+.app-screen{transition:opacity .3s cubic-bezier(.22,.9,.3,1),transform .3s cubic-bezier(.22,.9,.3,1)}
+/* 无障碍：减少动态 */
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+
 @media (max-width:1100px){.stage{flex-direction:column;align-items:center}.intro{position:static;max-width:560px}}
 </style>
 </head>
@@ -358,7 +448,7 @@ body{background:linear-gradient(160deg,#F0F3FF 0%,#F7F4FF 55%,#FDF2F8 100%);over
         <!-- 10 支付成功 -->
         <section class="app-screen notab" id="s10-payok">
           <div style="height:260px;background:var(--grad);border-radius:0 0 40px 40px;display:grid;place-items:center;color:#fff;padding-top:34px">
-            <div style="text-align:center"><div style="width:74px;height:74px;margin:0 auto;border-radius:50%;background:rgba(255,255,255,.2);display:grid;place-items:center;font-size:36px">✅</div><div style="font-size:19px;font-weight:800;margin-top:14px">支付成功</div><div style="font-size:12px;opacity:.9;margin-top:6px;line-height:1.7">资金已进入微信收付通担保账户<br>确认收货后分账：卖家 97% / 平台 3%</div></div>
+            <div style="text-align:center"><div class="pop" style="width:74px;height:74px;margin:0 auto;border-radius:50%;background:rgba(255,255,255,.2);display:grid;place-items:center;font-size:36px">✅</div><div style="font-size:19px;font-weight:800;margin-top:14px">支付成功</div><div style="font-size:12px;opacity:.9;margin-top:6px;line-height:1.7">资金已进入微信收付通担保账户<br>确认收货后分账：卖家 97% / 平台 3%</div></div>
           </div>
           <div class="mx pad card" style="margin-top:-30px">
             <div style="display:flex;gap:11px;align-items:center">
@@ -423,7 +513,7 @@ body{background:linear-gradient(160deg,#F0F3FF 0%,#F7F4FF 55%,#FDF2F8 100%);over
           <header class="app-head"><div class="htitle"><button class="backbtn" onclick="back()">‹</button>我的钱包</div></header>
           <div class="mx" style="background:linear-gradient(135deg,#2B2F55,#4A3F8F);border-radius:18px;padding:18px 16px;color:#fff">
             <div style="font-size:12px;opacity:.8">可提现余额（担保交易 T+1 结算）</div>
-            <div style="font-size:30px;font-weight:800;margin-top:6px">¥1,286.50</div>
+            <div style="font-size:30px;font-weight:800;margin-top:6px">¥<span id="walBal">1,286.50</span></div>
             <div style="display:flex;gap:9px;margin-top:14px"><button class="btn-sm" style="background:rgba(255,255,255,.2)" onclick="toast('提现申请已提交：¥1,286.50 · 手续费 0.1% · 财务审核中')">提现到零钱</button><button class="btn-sm" style="background:rgba(255,255,255,.2)" onclick="toast('账单明细（演示）')">账单明细</button></div>
           </div>
           <div class="sect"><h3>佣金账单（T+1 批处理生成）</h3></div>
@@ -606,21 +696,21 @@ body{background:linear-gradient(160deg,#F0F3FF 0%,#F7F4FF 55%,#FDF2F8 100%);over
         <section class="app-screen notab" id="s27-admindash">
           <header class="app-head"><div class="htitle"><button class="backbtn" onclick="back()">‹</button>后台 · 数据看板</div><div class="hsub">Vue3 管理后台（移动预览）· 超管视角</div></header>
           <div class="mx" style="display:grid;grid-template-columns:1fr 1fr;gap:9px">
-            <div class="card pad" style="margin:0"><div style="font-size:10.5px;color:#8A90A6">DAU（30%渗透）</div><div style="font-size:20px;font-weight:800;margin-top:4px">7.2<span style="font-size:12px">万</span></div><div style="font-size:10px;color:var(--green);margin-top:2px">↑ 12.4% 周环比</div></div>
-            <div class="card pad" style="margin:0"><div style="font-size:10.5px;color:#8A90A6">月 GMV</div><div style="font-size:20px;font-weight:800;margin-top:4px">¥48.6<span style="font-size:12px">万</span></div><div style="font-size:10px;color:var(--green);margin-top:2px">↑ 8.9% 周环比</div></div>
-            <div class="card pad" style="margin:0"><div style="font-size:10.5px;color:#8A90A6">抽佣收入（本月）</div><div style="font-size:20px;font-weight:800;margin-top:4px">¥1.42<span style="font-size:12px">万</span></div><div style="font-size:10px;color:#8A90A6;margin-top:2px">教材单占比 46%（1% 费率）</div></div>
-            <div class="card pad" style="margin:0"><div style="font-size:10.5px;color:#8A90A6">广告收入（本月）</div><div style="font-size:20px;font-weight:800;margin-top:4px">¥8,900</div><div style="font-size:10px;color:#8A90A6;margin-top:2px">CPM 62% · CPC 38%</div></div>
+            <div class="card pad" style="margin:0"><div style="font-size:10.5px;color:#8A90A6">DAU（30%渗透）</div><div style="font-size:20px;font-weight:800;margin-top:4px"><span id="stDau">7.2</span><span style="font-size:12px">万</span></div><div style="font-size:10px;color:var(--green);margin-top:2px">↑ 12.4% 周环比</div></div>
+            <div class="card pad" style="margin:0"><div style="font-size:10.5px;color:#8A90A6">月 GMV</div><div style="font-size:20px;font-weight:800;margin-top:4px">¥<span id="stGmv">48.6</span><span style="font-size:12px">万</span></div><div style="font-size:10px;color:var(--green);margin-top:2px">↑ 8.9% 周环比</div></div>
+            <div class="card pad" style="margin:0"><div style="font-size:10.5px;color:#8A90A6">抽佣收入（本月）</div><div style="font-size:20px;font-weight:800;margin-top:4px">¥<span id="stYy">1.42</span><span style="font-size:12px">万</span></div><div style="font-size:10px;color:#8A90A6;margin-top:2px">教材单占比 46%（1% 费率）</div></div>
+            <div class="card pad" style="margin:0"><div style="font-size:10.5px;color:#8A90A6">广告收入（本月）</div><div style="font-size:20px;font-weight:800;margin-top:4px">¥<span id="stAd">8,900</span></div><div style="font-size:10px;color:#8A90A6;margin-top:2px">CPM 62% · CPC 38%</div></div>
           </div>
           <div class="mx card pad">
             <div style="font-size:13px;font-weight:700">近 7 日 GMV 走势</div>
             <div style="display:flex;align-items:flex-end;gap:7px;height:90px;margin-top:12px">
-              <div style="flex:1;background:var(--grad);border-radius:5px 5px 0 0;height:34%;opacity:.55"></div>
-              <div style="flex:1;background:var(--grad);border-radius:5px 5px 0 0;height:46%;opacity:.6"></div>
-              <div style="flex:1;background:var(--grad);border-radius:5px 5px 0 0;height:40%;opacity:.65"></div>
-              <div style="flex:1;background:var(--grad);border-radius:5px 5px 0 0;height:58%;opacity:.75"></div>
-              <div style="flex:1;background:var(--grad);border-radius:5px 5px 0 0;height:52%;opacity:.85"></div>
-              <div style="flex:1;background:var(--grad);border-radius:5px 5px 0 0;height:78%;opacity:.95"></div>
-              <div style="flex:1;background:var(--grad);border-radius:5px 5px 0 0;height:100%"></div>
+              <div class="chartbar" style="flex:1;background:var(--grad);border-radius:5px 5px 0 0;height:34%;opacity:.55"></div>
+              <div class="chartbar" style="flex:1;background:var(--grad);border-radius:5px 5px 0 0;height:46%;opacity:.6"></div>
+              <div class="chartbar" style="flex:1;background:var(--grad);border-radius:5px 5px 0 0;height:40%;opacity:.65"></div>
+              <div class="chartbar" style="flex:1;background:var(--grad);border-radius:5px 5px 0 0;height:58%;opacity:.75"></div>
+              <div class="chartbar" style="flex:1;background:var(--grad);border-radius:5px 5px 0 0;height:52%;opacity:.85"></div>
+              <div class="chartbar" style="flex:1;background:var(--grad);border-radius:5px 5px 0 0;height:78%;opacity:.95"></div>
+              <div class="chartbar" style="flex:1;background:var(--grad);border-radius:5px 5px 0 0;height:100%"></div>
             </div>
             <div style="display:flex;gap:7px;margin-top:6px;font-size:9.5px;color:#B3B8C9"><span style="flex:1;text-align:center">09-06</span><span style="flex:1;text-align:center">09-07</span><span style="flex:1;text-align:center">09-08</span><span style="flex:1;text-align:center">09-09</span><span style="flex:1;text-align:center">09-10</span><span style="flex:1;text-align:center">09-11</span><span style="flex:1;text-align:center">今日</span></div>
           </div>
@@ -802,14 +892,17 @@ function go(id,reset){
 }
 function back(){stack.pop();var prev=stack.pop();showScreen(prev||'s18-feed')}
 function showScreen(id){
-  $$('.app-screen').forEach(function(s){s.classList.toggle('active',s.id===id)});
+  $$('.app-screen').forEach(function(s){s.classList.remove('entering');s.classList.toggle('active',s.id===id)});
   var isTab=!!TABS[id];
   $('#tabbar').classList.toggle('hide',!isTab);
   $('#fab').style.display=isTab?'grid':'none';
   $$('.tbtn').forEach(function(b){b.classList.toggle('on',b.dataset.tab===id)});
   var sc=document.getElementById(id);if(sc)sc.scrollTop=0;
   $$('#screenIndex .idx-item').forEach(function(i){i.classList.toggle('on',i.dataset.id===id)});
+  if(sc){sc.classList.add('entering');clearTimeout(sc._et);sc._et=setTimeout(function(){sc.classList.remove('entering')},1200)}
   if(id==='s26-splashad')startSkip();
+  if(id==='s27-admindash')setTimeout(runDash,150);
+  if(id==='s15-wallet')setTimeout(runWallet,150);
 }
 function fabAction(){var c=cur();if(c==='s05-market')go('s06-publish');else go('s19-postpub')}
 (function(){
@@ -1063,6 +1156,8 @@ function sendMsg(){
   if(!t){toast('先输入内容再发送哦');return}
   var c=null;for(var i=0;i<CHATS.length;i++){if(CHATS[i].id===curChat)c=CHATS[i]}
   $('#chatMsgs').insertAdjacentHTML('beforeend','<div class="bub r"><div class="ava ab">🧑🏻‍💻</div><div class="btxt">'+t.replace(/</g,'&lt;')+'</div></div>');
+  var nb=$('#chatMsgs').lastElementChild;
+  if(nb)nb.style.animation='bubIn .4s cubic-bezier(.34,1.56,.64,1)';
   inp.textContent='';
   $('#chatMsgs').lastElementChild.scrollIntoView({behavior:'smooth'});
   toast('已发送（敏感词机审通过）');
@@ -1254,8 +1349,14 @@ function vote(n){
   if(voted){toast('你已投过票啦');return}
   voted=true;voteCounts[n-1]++;
   var total=voteCounts[0]+voteCounts[1]+voteCounts[2];
-  var colors=['var(--blue)','var(--orange)','var(--green)'],names=['支持买家','支持卖家','支持平台'];
-  $('#voteBars').innerHTML=voteCounts.map(function(c,i){return '<div class="b3r"><span class="lb">'+names[i]+'</span><div class="bar"><i style="width:'+(c*100/total).toFixed(0)+'%;background:'+colors[i]+'"></i></div><span class="pc">'+(c*100/total).toFixed(0)+'%</span></div>'}).join('');
+  var rows=$$('#voteBars .b3r');
+  rows.forEach(function(row,i){
+    var pct=Math.round(voteCounts[i]*100/total);
+    var bar=row.querySelector('.bar i');
+    if(bar)bar.style.width=pct+'%';
+    var pc=row.querySelector('.pc');
+    if(pc)pc.textContent=pct+'%';
+  });
   $$('#voteBtns .btn').forEach(function(b){b.disabled=true;b.style.opacity=.5});
   $('#voteResult').style.display='block';
   toast('投票成功！纳入一致率看板');
@@ -1282,6 +1383,27 @@ $$('#s06-publish .form-item .opt-chips .chip, #s19-postpub .opt-chips .chip, #s1
     c.classList.add('on');
   });
 });
+/* ================= 动效初始化 ================= */
+/* 屏幕顶层子元素标记（入场交错） */
+$$('.app-screen').forEach(function(s){Array.prototype.forEach.call(s.children,function(ch){ch.classList.add('sti')})});
+/* 动态列表容器标记（子项交错浮现） */
+['feedList','marketGrid','orderList','chatList','kocList','auditList','courtList','cd-posts','uh-goods','uh-posts','confList','circleList','cfgList','billList','ticketList'].forEach(function(id){var el=document.getElementById(id);if(el)el.setAttribute('data-stag','1')});
+/* 数字滚动 */
+function countUp(id,target,dec){
+  var el=document.getElementById(id);if(!el)return;
+  var t0=null;
+  function step(ts){
+    if(!t0)t0=ts;
+    var p=Math.min((ts-t0)/850,1);
+    p=1-Math.pow(1-p,3);
+    el.textContent=dec>0?(target*p).toFixed(dec):Math.round(target*p).toLocaleString('en-US');
+    if(p<1)requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
+function runDash(){countUp('stDau',7.2,1);countUp('stGmv',48.6,1);countUp('stYy',1.42,2);countUp('stAd',8900,0)}
+function runWallet(){countUp('walBal',1286.5,2)}
+
 renderMarket();renderFeed();renderCircles();renderConf('树洞');renderChats();
 renderOrders('all');renderKoc();renderAudit('all');renderTickets();renderBills();renderCfg();renderCourt();
 go('s18-feed',true);
