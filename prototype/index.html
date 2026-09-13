@@ -61,7 +61,13 @@ body{background:linear-gradient(160deg,#F0F3FF 0%,#F7F4FF 55%,#FDF2F8 100%);over
 .app-head{position:sticky;top:0;z-index:40;background:var(--grad);color:#fff;padding:58px 16px 15px;border-radius:0 0 26px 26px}
 .app-head .htitle{font-size:19px;font-weight:800;display:flex;align-items:center;gap:8px}
 .hsub{font-size:11.5px;opacity:.85;margin-top:3px}
-.backbtn{width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.2);border:none;color:#fff;font-size:16px;cursor:pointer;flex:none;display:grid;place-items:center}
+.backbtn{width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.2);border:none;color:#fff;font-size:17px;cursor:pointer;flex:none;display:grid;place-items:center}
+.hico{width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.22);border:none;color:#fff;font-size:16px;cursor:pointer;display:grid;place-items:center;position:relative;flex:none;transition:transform .15s cubic-bezier(.22,.9,.3,1),background .2s}
+.hico:hover{background:rgba(255,255,255,.34)}
+.hico:active{transform:scale(.9)}
+.hico .rdot{position:absolute;top:1px;right:1px;min-width:14px;height:14px;border-radius:8px;background:var(--red);color:#fff;font-size:9px;font-weight:700;display:grid;place-items:center;padding:0 3px;border:2px solid #7B8AF8}
+.qbtn{flex:none;background:rgba(255,255,255,.95);border:none;color:var(--brand);font-size:12px;font-weight:700;padding:8px 14px;border-radius:999px;cursor:pointer;box-shadow:0 3px 10px rgba(17,20,40,.14);transition:transform .15s cubic-bezier(.22,.9,.3,1)}
+.qbtn:active{transform:scale(.93)}
 .search{margin-top:12px;background:rgba(255,255,255,.22);border-radius:12px;padding:10px 14px;font-size:12.5px;color:rgba(255,255,255,.9);display:flex;align-items:center;gap:6px}
 .search input{background:none;border:none;outline:none;color:#fff;font-size:12.5px;width:100%;font-family:inherit}
 .search input::placeholder{color:rgba(255,255,255,.75)}
@@ -145,8 +151,27 @@ body{background:linear-gradient(160deg,#F0F3FF 0%,#F7F4FF 55%,#FDF2F8 100%);over
 .bub .btxt{background:#fff;border-radius:4px 14px 14px 14px;padding:9px 12px;font-size:13px;line-height:1.6;box-shadow:0 3px 10px rgba(28,32,48,.05)}
 .bub.r{flex-direction:row-reverse;margin-left:auto}
 .bub.r .btxt{background:var(--grad);color:#fff;border-radius:14px 4px 14px 14px}
-.gcard-msg{width:190px;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 4px 12px rgba(28,32,48,.1);margin-top:2px}
+.gcard-msg{width:190px;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 4px 12px rgba(28,32,48,.1)}
 .gcard-msg .gimg2{height:80px;display:grid;place-items:center;font-size:30px}
+.bcol{display:flex;flex-direction:column;gap:6px;align-items:flex-start;min-width:0}
+.bub.r .bcol{align-items:flex-end}
+.sys-tip{align-self:center;font-size:10px;color:#B3B8C9;background:rgba(240,241,248,.95);padding:4px 11px;border-radius:999px}
+.sys-msg{align-self:center;max-width:82%;background:rgba(240,241,248,.95);color:#6B7290;font-size:10.5px;padding:6px 12px;border-radius:10px;text-align:center;line-height:1.7}
+.readtip{align-self:flex-end;font-size:9.5px;color:#B3B8C9;margin-top:-6px}
+#chatInput:empty::before{content:'说点什么…';color:#A6ACC4}
+#chatList{background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 6px 18px rgba(28,32,48,.05)}
+.chatrow{display:flex;align-items:center;gap:11px;padding:12px 13px;cursor:pointer;transition:background .15s}
+.chatrow:hover{background:#F8F9FC}
+.chatrow:active{background:#F1F2F8}
+.chatrow+.chatrow{border-top:1px solid #F3F4F9}
+.cr-ava{width:46px;height:46px;border-radius:13px;display:grid;place-items:center;font-size:22px;flex:none}
+.cr-main{flex:1;min-width:0}
+.cr-top{display:flex;align-items:baseline;gap:8px}
+.cr-name{font-size:13.5px;font-weight:700;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cr-time{font-size:10px;color:#B3B8C9;flex:none}
+.cr-bot{display:flex;align-items:center;gap:8px;margin-top:3px}
+.cr-pv{flex:1;min-width:0;font-size:11.5px;color:#8A90A6;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cr-badge{background:var(--red);color:#fff;font-size:9.5px;font-weight:700;min-width:16px;height:16px;border-radius:8px;display:grid;place-items:center;padding:0 4px;flex:none}
 .codebox{display:flex;gap:7px;justify-content:center;margin:18px 0 8px}
 .codebox i{width:40px;height:52px;border-radius:10px;background:var(--grad);color:#fff;font-style:normal;font-size:24px;font-weight:800;display:grid;place-items:center;box-shadow:0 8px 18px rgba(88,101,242,.35)}
 .bar3{display:flex;flex-direction:column;gap:7px;margin-top:12px}
@@ -250,6 +275,40 @@ button:active{transform:scale(.95)}
 .app-screen{transition:opacity .3s cubic-bezier(.22,.9,.3,1),transform .3s cubic-bezier(.22,.9,.3,1)}
 /* 无障碍：减少动态 */
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+
+/* ================= 圈子改版（贴吧吧头 + 小红书瀑布流） ================= */
+.mc{text-align:center;cursor:pointer;flex:none;width:70px}
+.mc>span{display:block;margin-top:1px;font-size:11px;color:#4A5070;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mc-ava{width:52px;height:52px;border-radius:50%;margin:0 auto 5px;display:grid;place-items:center;font-size:22px;box-shadow:0 6px 14px rgba(28,32,48,.12);border:2px solid #fff;transition:transform .2s var(--ez)}
+.mc:hover .mc-ava{transform:scale(1.06)}
+.mc span{font-size:10.5px;color:#4A5070;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cc-card{background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 6px 18px rgba(28,32,48,.05);cursor:pointer;transition:transform .22s var(--ez),box-shadow .25s var(--ez)}
+.cc-card:hover{transform:translateY(-3px);box-shadow:0 14px 30px rgba(28,32,48,.1)}
+.cc-cover{height:86px;display:grid;place-items:center;font-size:34px;position:relative;overflow:hidden}
+.cc-hot{position:absolute;top:8px;left:8px;font-size:9.5px;background:rgba(255,255,255,.92);color:#D97706;padding:2px 8px;border-radius:999px;font-weight:700}
+.cc-body{padding:9px 10px 11px}
+.cc-name{font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#hotCircles .cc-card{flex:none;width:152px}
+.cc-desc{font-size:10.5px;color:#9AA0B5;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cc-meta{font-size:10px;color:#B3B8C9;margin-top:6px;display:flex;justify-content:space-between;align-items:center;gap:6px;white-space:nowrap}
+.cc-join{border:1.5px solid var(--brand);color:var(--brand);background:#fff;font-size:10.5px;font-weight:700;padding:3px 11px;border-radius:999px;cursor:pointer;flex:none}
+.cbanner{position:relative;height:172px;padding:98px 16px 16px;color:#fff;overflow:hidden}
+.cbanner::after{content:"";position:absolute;inset:0;background:radial-gradient(circle at 80% 20%,rgba(255,255,255,.18),transparent 55%)}
+.cb-emoji{position:absolute;right:-8px;top:26px;font-size:98px;opacity:.26;transform:rotate(-12deg)}
+.cb-name{font-size:21px;font-weight:800;text-shadow:0 2px 8px rgba(0,0,0,.18)}
+.cb-meta{font-size:11.5px;opacity:.92;margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cb-join{background:#fff;color:var(--brand);border:none;font-size:12.5px;font-weight:800;padding:7px 18px;border-radius:999px;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,.16)}
+.cb-sign{background:rgba(255,255,255,.22);color:#fff;border:1px solid rgba(255,255,255,.55);font-size:12px;font-weight:600;padding:7px 14px;border-radius:999px;cursor:pointer}
+.notecard{overflow:hidden;border-radius:14px;cursor:pointer}
+.nc-cover{display:grid;place-items:center;font-size:38px;position:relative;overflow:hidden}
+.nc-txt{background:linear-gradient(135deg,#F1F3FE,#FDF2F8);display:flex;align-items:center;padding:12px;font-size:12px;color:#4A5070;line-height:1.75;font-weight:600}
+.nc-body{padding:9px 10px 10px}
+.nc-title{font-size:12.5px;font-weight:700;line-height:1.5;height:38px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.nc-foot{display:flex;align-items:center;gap:5px;margin-top:7px}
+.nc-ava{width:18px;height:18px;border-radius:50%;display:grid;place-items:center;font-size:10px;flex:none}
+.nc-name{font-size:10.5px;color:#9AA0B5;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nc-like{font-size:10.5px;color:#8A90A6;flex:none}
+.fab2{position:sticky;bottom:22px;margin-left:auto;margin-right:16px;width:50px;height:50px;border-radius:50%;background:var(--grad);color:#fff;font-size:19px;border:3px solid #fff;box-shadow:0 10px 24px rgba(88,101,242,.5);cursor:pointer;z-index:45;display:block}
 
 @media (max-width:1100px){.stage{flex-direction:column;align-items:center}.intro{position:static;max-width:560px}}
 </style>
@@ -528,23 +587,51 @@ button:active{transform:scale(.95)}
 
         <!-- 16 圈子广场 -->
         <section class="app-screen" id="s16-circles">
-          <header class="app-head"><div class="htitle">圈子</div><div class="hsub">校内圈自动入圈 · 跨校圈 · 兴趣圈申请创建</div></header>
-          <div class="banner-ad" style="background:linear-gradient(120deg,#6366F1,#8B5CF6)" onclick="toast('广告 · 圈子置顶位（后台直发）')"><div style="flex:1"><b style="font-size:14px">云川高校联谊滑雪营 · 报名中</b><div style="font-size:11px;opacity:.9;margin-top:3px">圈子置顶广告 · 12月发团</div></div><span style="font-size:30px">⛷️</span><span class="adtag" style="position:absolute;top:6px;right:8px;background:rgba(255,255,255,.25);border:none;color:#fff">广告 · 置顶</span></div>
-          <div id="circleList" style="padding:4px 14px 0"></div>
+          <header class="app-head">
+            <div class="htitle">圈子</div>
+            <div class="hsub">找到你的同好部落 · 内容双列逛不停</div>
+            <div class="search">🔍 搜索圈子、话题、帖子</div>
+          </header>
+          <div class="sect" style="margin-top:14px"><h3>我的圈子</h3><span class="more">管理 ›</span></div>
+          <div id="myCircles" style="display:flex;gap:14px;overflow-x:auto;padding:2px 14px 6px;scrollbar-width:none"></div>
+          <div class="chips" id="ccChips" style="padding-top:4px">
+            <button class="chip on" data-t="all">全部</button>
+            <button class="chip" data-t="校内圈">🏫 校内圈</button>
+            <button class="chip" data-t="跨校圈">🤝 跨校圈</button>
+            <button class="chip" data-t="兴趣圈">✨ 兴趣圈</button>
+          </div>
+          <div class="sect"><h3>🔥 热门圈子</h3><span class="more" onclick="toast('更多热门圈子（演示）')">更多 ›</span></div>
+          <div id="hotCircles" style="display:flex;gap:10px;overflow-x:auto;padding:2px 14px 6px;scrollbar-width:none"></div>
+          <div class="sect"><h3>发现圈子</h3></div>
+          <div id="discGrid" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 14px"></div>
           <div style="height:12px"></div>
         </section>
 
         <!-- 17 圈子详情 -->
-        <section class="app-screen" id="s17-circledetail">
-          <header class="app-head"><div class="htitle"><button class="backbtn" onclick="back()">‹</button><span id="cd-name">川大跳蚤市场</span></div><div class="hsub" id="cd-meta">校内圈 · 12.8 万成员 · 官方冷启动</div></header>
-          <div class="mx card pad" style="display:flex;align-items:center;gap:10px;background:linear-gradient(135deg,#EEF2FF,#F5F3FF);border:none">
-            <div style="font-size:26px" id="cd-icon">🛍️</div>
-            <div style="flex:1;font-size:11.5px;color:#4A5070;line-height:1.6" id="cd-intro">认证自动入圈 · 二手好物优先展示本校 · 圈主每月考核 MAU 与违规率</div>
-            <button class="btn-sm" onclick="toast('已加入圈子 ✓')">+ 加入</button>
+        <section class="app-screen notab" id="s17-circledetail">
+          <div class="cbanner" id="cd-banner" style="background:linear-gradient(135deg,#6366F1,#8B5CF6)">
+            <div style="position:absolute;top:56px;left:14px;z-index:6"><button class="backbtn" onclick="back()">‹</button></div>
+            <div class="cb-emoji" id="cd-emoji">🛍️</div>
+            <div style="position:relative;z-index:2">
+              <div class="cb-name" id="cd-name">川大跳蚤市场</div>
+              <div class="cb-meta" id="cd-meta">校内圈 · 12.8万成员 · 3.4万帖子</div>
+              <div style="display:flex;gap:8px;margin-top:12px">
+                <button class="cb-join" onclick="toast('已关注圈子 ✓ 新帖将推送')">+ 关注</button>
+                <button class="cb-sign" onclick="toast('签到成功，校园积分 +5 ✅')">签到 +5</button>
+              </div>
+            </div>
           </div>
-          <div class="seg"><span class="on">全部</span><span>精华</span><span>投票</span><span>问答</span></div>
-          <div id="cd-posts" style="padding:0 14px;display:flex;flex-direction:column;gap:10px"></div>
-          <div style="height:12px"></div>
+          <div style="margin:12px 14px 0;display:flex;gap:9px;align-items:flex-start;background:linear-gradient(135deg,#FFFBEB,#FEF3C7);border:1px solid #FDE68A;border-radius:13px;padding:10px 12px">
+            <span style="font-size:15px;flex:none">📋</span>
+            <div style="font-size:11.5px;color:#92400E;line-height:1.7"><b>圈主公告：</b>本周话题 <b>#晒晒我的二手好物#</b> 参与得双倍曝光；新同学请先到「新人报到」帖签到～</div>
+          </div>
+          <div class="seg" style="margin-top:4px"><span class="on">全部</span><span>精华</span><span>投票</span><span>问答</span></div>
+          <div style="display:flex;gap:10px;padding:0 14px;align-items:flex-start">
+            <div id="cd-col1" data-stag="1" style="flex:1;display:flex;flex-direction:column;gap:10px"></div>
+            <div id="cd-col2" data-stag="1" style="flex:1;display:flex;flex-direction:column;gap:10px"></div>
+          </div>
+          <div style="height:56px"></div>
+          <button class="fab2" onclick="go('s19-postpub')">✏️</button>
         </section>
 
         <!-- 18 信息流（首页） -->
@@ -553,14 +640,16 @@ button:active{transform:scale(.95)}
             <div style="display:flex;align-items:center;gap:12px">
               <div style="font-size:20px;font-weight:800">校集</div>
               <div style="flex:1"></div>
-              <span style="font-size:16px;cursor:pointer" onclick="go('s32-court')">⚖️</span>
-              <span style="font-size:16px;cursor:pointer" onclick="toast('暂无新通知 🔔')">🔔</span>
+              <button class="hico" title="消息" onclick="go('s22-chats')"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><span class="rdot">8</span></button>
+              <button class="hico" title="小法庭" onclick="go('s32-court')"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></svg></button>
+              <button class="hico" title="通知" onclick="toast('暂无新通知')"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></button>
             </div>
-            <div style="display:flex;gap:6px;margin-top:11px;overflow-x:auto;scrollbar-width:none">
-              <button style="flex:none;background:rgba(255,255,255,.18);border:none;color:#fff;font-size:11px;padding:6px 11px;border-radius:999px;cursor:pointer" onclick="go('s02-auth')">🎓 校园认证</button>
-              <button style="flex:none;background:rgba(255,255,255,.18);border:none;color:#fff;font-size:11px;padding:6px 11px;border-radius:999px;cursor:pointer" onclick="go('s21-confession')">🌳 树洞</button>
-              <button style="flex:none;background:rgba(255,255,255,.18);border:none;color:#fff;font-size:11px;padding:6px 11px;border-radius:999px;cursor:pointer" onclick="go('s32-court')">⚖️ 小法庭</button>
-              <button style="flex:none;background:rgba(255,255,255,.18);border:none;color:#fff;font-size:11px;padding:6px 11px;border-radius:999px;cursor:pointer" onclick="go('s25-koc')">🌟 达人中心</button>
+            <div style="display:flex;gap:7px;margin-top:11px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px">
+              <button class="qbtn" onclick="go('s02-auth')">🎓 校园认证</button>
+              <button class="qbtn" onclick="go('s21-confession')">🌳 树洞</button>
+              <button class="qbtn" onclick="go('s32-court')">⚖️ 小法庭</button>
+              <button class="qbtn" onclick="go('s25-koc')">🌟 达人中心</button>
+              <button class="qbtn" onclick="go('s15-wallet')">💰 钱包</button>
             </div>
           </header>
           <div class="seg" id="feedSeg"><span class="on" data-scope="school">本校</span><span data-scope="follow">关注</span><span data-scope="rec">推荐</span></div>
@@ -602,15 +691,15 @@ button:active{transform:scale(.95)}
           <div style="height:12px"></div>
         </section>
         <!-- 22 会话列表 -->
-        <section class="app-screen" id="s22-chats">
-          <header class="app-head"><div class="htitle">消息</div><div class="hsub">单聊 · 群聊 · 交易通知（订阅消息兜底）</div></header>
-          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin:-24px 14px 0;position:relative;background:#fff;border-radius:18px;padding:14px 6px 12px;box-shadow:0 10px 26px rgba(28,32,48,.06)">
+        <section class="app-screen notab" id="s22-chats">
+          <header class="app-head"><div class="htitle"><button class="backbtn" onclick="back()">‹</button>消息</div><div class="hsub">单聊 · 群聊 · 交易通知（订阅消息兜底）</div></header>
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin:12px 14px 0;background:#fff;border-radius:18px;padding:14px 6px 12px;box-shadow:0 10px 26px rgba(28,32,48,.06)">
             <button style="background:none;border:none;text-align:center;cursor:pointer;font-size:11px;color:#4A5070;position:relative" onclick="toast('12 条新的赞 ❤️')"><span style="width:44px;height:44px;margin:0 auto 5px;border-radius:15px;display:grid;place-items:center;font-size:19px;background:#FFE9EC">❤️</span><span style="position:absolute;top:-3px;right:calc(50% - 25px);background:var(--red);color:#fff;font-size:9px;min-width:15px;height:15px;border-radius:8px;display:grid;place-items:center;padding:0 4px">12</span>收到的赞</button>
             <button style="background:none;border:none;text-align:center;cursor:pointer;font-size:11px;color:#4A5070" onclick="toast('5 条新评论 💬')"><span style="width:44px;height:44px;margin:0 auto 5px;border-radius:15px;display:grid;place-items:center;font-size:19px;background:#E3F0FF">💬</span>评论</button>
             <button style="background:none;border:none;text-align:center;cursor:pointer;font-size:11px;color:#4A5070" onclick="go('s12-orders')"><span style="width:44px;height:44px;margin:0 auto 5px;border-radius:15px;display:grid;place-items:center;font-size:19px;background:#E7F7EC">📦</span>订单</button>
             <button style="background:none;border:none;text-align:center;cursor:pointer;font-size:11px;color:#4A5070" onclick="go('s15-wallet')"><span style="width:44px;height:44px;margin:0 auto 5px;border-radius:15px;display:grid;place-items:center;font-size:19px;background:#FFF3D6">💰</span>钱包</button>
           </div>
-          <div id="chatList" style="margin:12px 14px 0;display:flex;flex-direction:column;gap:8px"></div>
+          <div id="chatList" style="margin:12px 14px 0"></div>
         </section>
 
         <!-- 23 聊天页 -->
@@ -620,7 +709,7 @@ button:active{transform:scale(.95)}
           <div class="bubble-wrap" id="chatMsgs"></div>
           <div style="height:70px"></div>
           <div style="position:sticky;bottom:0;background:#fff;border-top:1px solid var(--line);display:flex;gap:8px;padding:10px 14px 16px;align-items:center">
-            <span style="font-size:19px">➕</span>
+            <button style="background:none;border:none;font-size:19px;cursor:pointer;padding:2px 4px;flex:none" onclick="toast('图片 / 商品卡片 / 拼团接龙（演示）')">➕</button>
             <div style="flex:1;height:40px;background:#F3F4FA;border-radius:20px;display:flex;align-items:center;padding:0 14px;font-size:12.5px;color:#A6ACC4" contenteditable="true" id="chatInput"></div>
             <button style="height:40px;padding:0 15px;border-radius:20px;background:var(--grad);color:#fff;border:none;font-size:13px;font-weight:600;cursor:pointer" onclick="sendMsg()">发送</button>
           </div>
@@ -628,14 +717,14 @@ button:active{transform:scale(.95)}
 
         <!-- 24 我的 -->
         <section class="app-screen" id="s24-me">
-          <header style="position:sticky;top:0;z-index:40;background:var(--grad);color:#fff;padding:64px 18px 56px">
+          <header style="position:sticky;top:0;z-index:40;background:var(--grad);color:#fff;padding:64px 18px 22px">
             <div style="display:flex;align-items:center;gap:14px">
               <div style="width:62px;height:62px;border-radius:50%;background:#fff;display:grid;place-items:center;font-size:30px;border:3px solid rgba(255,255,255,.4);flex:none">🧑🏻‍💻</div>
               <div style="flex:1"><div style="font-size:18px;font-weight:800">MacTavish <span style="font-size:10px;color:#fff;background:rgba(255,255,255,.22);border:1px solid rgba(255,255,255,.4);padding:2px 8px;border-radius:999px;vertical-align:2px">🎓 四川大学 · 已认证</span></div><div style="font-size:12px;opacity:.88;margin-top:4px">信用分 <b>90</b> · 担保交易 12 单 · 履约率 100%</div></div>
               <button style="width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.18);border:none;color:#fff;font-size:14px;cursor:pointer" onclick="go('s03-profile')">›</button>
             </div>
           </header>
-          <div style="margin:-36px 14px 0;background:#fff;border-radius:18px;display:flex;padding:14px 0;box-shadow:0 10px 26px rgba(28,32,48,.06);position:relative">
+          <div style="margin:12px 14px 0;background:#fff;border-radius:18px;display:flex;padding:14px 0;box-shadow:0 10px 26px rgba(28,32,48,.06)">
             <div style="flex:1;text-align:center"><b style="font-size:16px">28</b><span style="display:block;font-size:10.5px;color:#8A90A6;margin-top:2px">帖子</span></div>
             <div style="flex:1;text-align:center"><b style="font-size:16px">12</b><span style="display:block;font-size:10.5px;color:#8A90A6;margin-top:2px">在售</span></div>
             <div style="flex:1;text-align:center"><b style="font-size:16px">156</b><span style="display:block;font-size:10.5px;color:#8A90A6;margin-top:2px">关注</span></div>
@@ -833,7 +922,6 @@ button:active{transform:scale(.95)}
           <button class="tbtn" data-tab="s16-circles"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2"/><path d="M2.5 20c.8-3.4 3.4-5 6.5-5s5.7 1.6 6.5 5"/><circle cx="17" cy="9" r="2.4"/><path d="M15.5 14.6c2.6.2 4.6 1.6 5.3 4.4"/></svg>圈子</button>
           <div style="flex:1"></div>
           <button class="tbtn" data-tab="s05-market"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>集市</button>
-          <button class="tbtn" data-tab="s22-chats"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>消息</button>
           <button class="tbtn" data-tab="s24-me"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>我的</button>
         </nav>
         <button class="fab" id="fab" onclick="fabAction()">＋</button>
@@ -868,7 +956,7 @@ var SCREENS=[
  {id:'s19-postpub',n:'发帖（五形态/匿名）',m:'M3 圈子与帖子'},
  {id:'s20-postdetail',n:'帖子详情（楼中楼）',m:'M3 圈子与帖子'},
  {id:'s21-confession',n:'树洞 · 表白墙',m:'M3 圈子与帖子'},
- {id:'s22-chats',n:'会话列表',m:'M4 聊天IM',tab:true},
+ {id:'s22-chats',n:'会话列表',m:'M4 聊天IM'},
  {id:'s23-chat',n:'聊天页（商品卡片/风控）',m:'M4 聊天IM'},
  {id:'s24-me',n:'我的（信用分/资产）',m:'M5 社交与达人',tab:true},
  {id:'s25-koc',n:'达人中心（蒲公英接单）',m:'M5 社交与达人'},
@@ -887,10 +975,11 @@ var stack=[];
 function cur(){var a=$('.app-screen.active');return a?a.id:'s18-feed'}
 function go(id,reset){
   if(!document.getElementById(id))return;
-  if(TABS[id])stack=[];else stack.push(cur());
+  var c=cur();
+  if(TABS[id])stack=[];else if(c!==id)stack.push(c);
   showScreen(id);if(reset)stack=[];
 }
-function back(){stack.pop();var prev=stack.pop();showScreen(prev||'s18-feed')}
+function back(){showScreen(stack.pop()||'s18-feed')}
 function showScreen(id){
   $$('.app-screen').forEach(function(s){s.classList.remove('entering');s.classList.toggle('active',s.id===id)});
   var isTab=!!TABS[id];
@@ -905,6 +994,8 @@ function showScreen(id){
   if(id==='s15-wallet')setTimeout(runWallet,150);
 }
 function fabAction(){var c=cur();if(c==='s05-market')go('s06-publish');else go('s19-postpub')}
+/* Tabbar 绑定（v1.0 重构时遗漏，补回） */
+$$('.tbtn').forEach(function(b){b.addEventListener('click',function(){go(b.dataset.tab)})});
 (function(){
   var html='',lastM='';
   SCREENS.forEach(function(s,i){
@@ -945,21 +1036,28 @@ var ORDERS=[
  {id:'o4',gid:'p3',no:'XJ2026091200031',status:10,trade:'面交',freight:0,rate:3,note:'24 小时内未支付自动关单',time:'今天 10:15'}
 ];
 var CIRCLES=[
- {type:'校内圈（认证自动入圈）',list:[{n:'川大跳蚤市场',c:'12.8万',i:'🛍️',d:'二手好物优先展示本校'},{n:'川大二手教材',c:'3.2万',i:'📚',d:'开学教材季 1% 佣金'}]},
- {type:'跨校圈（同城联盟）',list:[{n:'云川高校联盟',c:'5.6万',i:'🤝',d:'跨校活动 · 音乐节 · 拼车'},{n:'昆明高校拼车',c:'8,900',i:'🚗',d:'节假日返乡拼车'}]},
- {type:'兴趣圈（申请创建）',list:[{n:'数码发烧友',c:'2.1万',i:'🎧',d:'开箱 · 评测 · 换机'},{n:'考研上岸',c:'4.4万',i:'✍️',d:'经验分享 · 资料互换'},{n:'篮球场',c:'1.5万',i:'🏀',d:'约球 · 球鞋 · 赛事'}]}
+ {type:'校内圈',list:[
+  {n:'川大跳蚤市场',c:'12.8万',posts:'3.4万',i:'🛍️',d:'二手好物优先展示本校',g:['#6366F1','#8B5CF6'],hot:'教材季爆火'},
+  {n:'川大二手教材',c:'3.2万',posts:'1.2万',i:'📚',d:'开学教材季 · 佣金仅1%',g:['#F59E0B','#F97316'],hot:'新生必备'}]},
+ {type:'跨校圈',list:[
+  {n:'云川高校联盟',c:'5.6万',posts:'2.1万',i:'🤝',d:'跨校活动 · 音乐节 · 拼车',g:['#EC4899','#F43F5E'],hot:'音乐节召集'},
+  {n:'昆明高校拼车',c:'8,900',posts:'3,400',i:'🚗',d:'节假日返乡拼车',g:['#06B6D4','#3B82F6'],hot:'周末热帖'}]},
+ {type:'兴趣圈',list:[
+  {n:'考研上岸',c:'4.4万',posts:'1.8万',i:'✍️',d:'经验分享 · 资料互换',g:['#10B981','#059669'],hot:'冲刺季'},
+  {n:'数码发烧友',c:'2.1万',posts:'9,800',i:'🎧',d:'开箱 · 评测 · 换机',g:['#8B5CF6','#6D28D9'],hot:'新品季'},
+  {n:'篮球场',c:'1.5万',posts:'6,200',i:'🏀',d:'约球 · 球鞋 · 赛事',g:['#F97316','#EA580C'],hot:'约战热'}]}
 ];
 var CHATS=[
- {id:'c1',name:'学长小陈',sub:'单聊 · 在线',ava:'🧑‍🎓',ac:'aa',badge:'2'},
- {id:'c2',name:'川大二手交流群',sub:'群聊 · 326人',ava:'👥',ac:'ab',badge:'5'},
- {id:'c3',name:'动漫社招新小分队',sub:'群聊 · 48人',ava:'🎪',ac:'ad',badge:''},
- {id:'c4',name:'交易助手',sub:'系统通知',ava:'🤖',ac:'ac',badge:'1'}
+ {id:'c1',name:'学长小陈',sub:'单聊 · 在线',ava:'🧑‍🎓',ac:'aa',badge:'2',time:'14:20',pv:'[商品] iPad Air 5 64G 蓝色 95新'},
+ {id:'c2',name:'川大二手交流群',sub:'群聊 · 326人',ava:'👥',ac:'ab',badge:'5',time:'12:05',pv:'出一件九成新卫衣 M 码，需要的私我'},
+ {id:'c3',name:'动漫社招新小分队',sub:'群聊 · 48人',ava:'🎪',ac:'ad',badge:'',time:'昨天',pv:'我来！几点？'},
+ {id:'c4',name:'交易助手',sub:'系统通知',ava:'🤖',ac:'ac',badge:'1',time:'09:41',pv:'佣金账单已生成：¥0.35（教材类 1%）'}
 ];
 var MSGS={
  c1:[{r:0,t:'同学你好，iPad 还在吗？'},{r:1,t:'在的，95新，随时可面交验机'},{r:0,t:'电池效率多少？'},{r:1,t:'92%，商品卡片给你，直接拍就能走担保交易',goods:'p1'}],
  c2:[{r:0,t:'新人入群：学长学姐好呀～'},{r:1,t:'欢迎！集市逛起来🛍️'},{r:0,t:'出一件九成新卫衣 M 码，需要的私我'}],
  c3:[{r:0,t:'周六银杏大道摆摊，来两个人搬桌子！'},{r:1,t:'我来！几点？'}],
- c4:[{r:1,t:'你的商品「考研数学全套资料」有新订单，请及时发货'},{r:1,t:'佣金账单已生成：¥0.35（教材类 1%），T+1 结算'}]
+ c4:[{sys:1,t:'你的商品「考研数学全套资料」有新订单，请及时发货'},{sys:1,t:'佣金账单已生成：¥0.35（教材类 1%），T+1 结算'}]
 };
 var TASKS=[
  {t:'考研机构探店笔记（图文）',r:300,s:'招募中',d:'需 800 字 + 6 图，发布至考研上岸圈'},
@@ -1078,27 +1176,54 @@ $$('#feedSeg span').forEach(function(s){s.addEventListener('click',function(){
   $$('#feedSeg span').forEach(function(x){x.classList.remove('on')});s.classList.add('on');
   curScope=s.dataset.scope;renderFeed();
 })});
-function renderCircles(){
-  var html='';
-  CIRCLES.forEach(function(g){
-    html+='<div style="font-size:12px;color:#9AA0B5;margin:14px 2px 8px">'+g.type+'</div>';
-    g.list.forEach(function(c){
-      html+='<div class="card" style="padding:12px 13px;display:flex;align-items:center;gap:11px;margin-bottom:8px;cursor:pointer" data-cname="'+c.n+'" data-cmeta="'+g.type.split('（')[0]+' · '+c.c+' 成员" data-cicon="'+c.i+'" data-cintro="'+c.d+'">'+
-      '<div style="font-size:24px;flex:none">'+c.i+'</div><div style="flex:1"><b style="font-size:13.5px">'+c.n+'</b><div style="font-size:11px;color:#9AA0B5;margin-top:2px">'+c.d+' · '+c.c+' 成员</div></div><button class="btn-sm" onclick="event.stopPropagation();toast(\'已加入 ✓\')">+ 加入</button></div>';
-    });
-  });
-  $('#circleList').innerHTML=html;
-  $$('#circleList .card').forEach(function(el){el.addEventListener('click',function(){openCircle(el)})});
+var ccFilter='all';
+function circleCard(c,type){
+  return '<div class="cc-card" data-cname="'+c.n+'" data-cmeta="'+type+' · '+c.c+' 成员 · '+c.posts+' 帖子" data-cicon="'+c.i+'" data-cintro="'+c.d+'" data-cover="'+c.g.join(',')+'">'+
+  '<div class="cc-cover" style="background:linear-gradient(135deg,'+c.g[0]+','+c.g[1]+')">'+c.i+'<span class="cc-hot">'+c.hot+'</span></div>'+
+  '<div class="cc-body"><div class="cc-name">'+c.n+'</div><div class="cc-desc">'+c.d+'</div>'+
+  '<div class="cc-meta"><span>'+c.c+' 成员</span><button class="cc-join" onclick="event.stopPropagation();toast(\'已加入 ✓ 新帖将推送\')">+ 加入</button></div></div></div>';
 }
+function noteCard(p,idx){
+  var hs=[126,98,148,110,88,134];
+  var h=hs[idx%hs.length];
+  var cover=p.imgs
+    ?'<div class="nc-cover" style="height:'+h+'px;background:linear-gradient(135deg,'+p.imgs[0][1]+','+p.imgs[0][2]+')"><span>'+p.imgs[0][0]+'</span></div>'
+    :'<div class="nc-cover nc-txt" style="height:'+Math.round(h*0.8)+'px">'+p.text+'</div>';
+  return '<div class="notecard card" onclick="openPost(\''+p.id+'\')">'+cover+
+  '<div class="nc-body"><div class="nc-title">'+(p.title||p.text.slice(0,18))+'</div>'+
+  '<div class="nc-foot"><span class="nc-ava '+p.ac+'">'+p.emoji+'</span><span class="nc-name">'+p.name+'</span><span class="nc-like">❤ '+p.like+'</span></div></div></div>';
+}
+function renderCircles(){
+  var mine='',all=[];
+  CIRCLES.forEach(function(g){g.list.forEach(function(c){all.push({c:c,t:g.type})})});
+  CIRCLES.forEach(function(g){
+    var c=g.list[0];
+    mine+='<div class="mc" data-cname="'+c.n+'" data-cmeta="'+g.type+' · '+c.c+' 成员 · '+c.posts+' 帖子" data-cicon="'+c.i+'" data-cintro="'+c.d+'" data-cover="'+c.g.join(',')+'"><div class="mc-ava" style="background:linear-gradient(135deg,'+c.g[0]+','+c.g[1]+')">'+c.i+'</div><span>'+c.n+'</span></div>';
+  });
+  mine+='<div class="mc" onclick="toast(\'创建圈子需校园认证 + 圈主申请（演示）\')"><div class="mc-ava" style="background:#F3F4FA;color:#9AA0B5;font-size:20px">＋</div><span>创建</span></div>';
+  $('#myCircles').innerHTML=mine;
+  var hot=[all[0],all[2],all[4],all[1]].filter(Boolean);
+  $('#hotCircles').innerHTML=hot.map(function(o){return circleCard(o.c,o.t)}).join('');
+  var disc=all.filter(function(o){return ccFilter==='all'||o.t===ccFilter});
+  $('#discGrid').innerHTML=disc.map(function(o){return circleCard(o.c,o.t)}).join('')||'<div class="empty" style="grid-column:1/-1">该类型下暂无圈子</div>';
+  $$('#myCircles .mc[data-cname]').forEach(function(el){el.addEventListener('click',function(){openCircle(el)})});
+  $$('#hotCircles .cc-card').forEach(function(el){el.addEventListener('click',function(){openCircle(el)})});
+  $$('#discGrid .cc-card').forEach(function(el){el.addEventListener('click',function(){openCircle(el)})});
+}
+$$('#ccChips .chip').forEach(function(c){c.addEventListener('click',function(){
+  $$('#ccChips .chip').forEach(function(x){x.classList.remove('on')});c.classList.add('on');
+  ccFilter=c.dataset.t;renderCircles();
+})});
 function openCircle(el){
+  $('#cd-banner').style.background='linear-gradient(135deg,'+el.dataset.cover+')';
+  $('#cd-emoji').textContent=el.dataset.cicon;
   $('#cd-name').textContent=el.dataset.cname;
   $('#cd-meta').textContent=el.dataset.cmeta;
-  $('#cd-icon').textContent=el.dataset.cicon;
-  $('#cd-intro').textContent=el.dataset.cintro+' · 圈主每月考核 MAU 与违规率';
   var ps=POSTS.filter(function(p){return p.circle===el.dataset.cname});
-  if(!ps.length)ps=POSTS.slice(0,2);
-  $('#cd-posts').innerHTML=ps.map(postCard).join('');
-  bindPosts('#cd-posts');
+  if(ps.length<4){POSTS.forEach(function(p){if(ps.indexOf(p)<0&&ps.length<6)ps.push(p)})}
+  var col1='',col2='';
+  ps.forEach(function(p,i){var h=noteCard(p,i);if(i%2===0)col1+=h;else col2+=h});
+  $('#cd-col1').innerHTML=col1;$('#cd-col2').innerHTML=col2;
   go('s17-circledetail');
 }
 function renderConf(tab){
@@ -1129,25 +1254,32 @@ function openPost(id){
 function renderChats(){
   var html='';
   CHATS.forEach(function(c){
-    html+='<div class="card" data-cid="'+c.id+'" style="padding:11px 12px;display:flex;align-items:center;gap:11px;cursor:pointer;box-shadow:0 4px 14px rgba(28,32,48,.04)">'+
-    '<div class="ava '+c.ac+'" style="width:44px;height:44px;font-size:20px">'+c.ava+'</div>'+
-    '<div style="flex:1;min-width:0"><b style="font-size:13.5px">'+c.name+'</b><div style="font-size:12px;color:#9AA0B5;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+c.sub+'</div></div>'+
-    (c.badge?'<span style="background:var(--red);color:#fff;font-size:10px;min-width:16px;height:16px;border-radius:8px;display:grid;place-items:center;padding:0 4px">'+c.badge+'</span>':'')+'</div>';
+    html+='<div class="chatrow" data-cid="'+c.id+'">'+
+    '<div class="cr-ava '+c.ac+'">'+c.ava+'</div>'+
+    '<div class="cr-main"><div class="cr-top"><span class="cr-name">'+c.name+'</span><span class="cr-time">'+(c.time||'')+'</span></div>'+
+    '<div class="cr-bot"><div class="cr-pv">'+(c.pv||c.sub)+'</div>'+(c.badge?'<span class="cr-badge">'+c.badge+'</span>':'')+'</div></div></div>';
   });
   $('#chatList').innerHTML=html;
-  $$('#chatList .card').forEach(function(el){el.addEventListener('click',function(){openChat(el.dataset.cid)})});
+  $$('#chatList .chatrow').forEach(function(el){el.addEventListener('click',function(){openChat(el.dataset.cid)})});
 }
 var curChat='c1';
 function openChat(id){
   var c=null;for(var i=0;i<CHATS.length;i++){if(CHATS[i].id===id)c=CHATS[i]}
   if(!c)return;curChat=id;
   $('#chatName').textContent=c.name;$('#chatSub').textContent=c.sub;
-  $('#chatMsgs').innerHTML=(MSGS[id]||[]).map(function(m){
+  var ms=MSGS[id]||[],lastOwn=-1;
+  ms.forEach(function(m,i){if(m.r===1&&!m.goods&&!m.sys)lastOwn=i});
+  var div=(c.time&&c.time.indexOf('昨天')>=0)?c.time:('今天 '+(c.time||''));
+  var html='<div class="sys-tip">'+div+'</div>';
+  html+=ms.map(function(m){
+    if(m.sys)return '<div class="sys-msg">'+m.t+'</div>';
     if(m.goods){var g=G(m.goods);
-      return '<div class="bub'+(m.r?' r':'')+'"><div class="ava '+c.ac+'">'+c.ava+'</div><div class="gcard-msg" onclick="openGoods(\''+g.id+'\')"><div class="gimg2" style="background:linear-gradient(135deg,'+g.g[0]+','+g.g[1]+')">'+g.emoji+'</div><div style="padding:7px 9px"><div style="font-size:11.5px;font-weight:600;line-height:1.4">'+g.title+'</div><div style="font-size:13px;font-weight:800;color:var(--red);margin-top:3px">¥'+g.price+'</div></div></div></div>';
+      return '<div class="bub'+(m.r?' r':'')+'"><div class="ava '+c.ac+'">'+c.ava+'</div><div class="bcol">'+(m.t?'<div class="btxt">'+m.t+'</div>':'')+'<div class="gcard-msg" onclick="openGoods(\''+g.id+'\')"><div class="gimg2" style="background:linear-gradient(135deg,'+g.g[0]+','+g.g[1]+')">'+g.emoji+'</div><div style="padding:7px 9px"><div style="font-size:11.5px;font-weight:600;line-height:1.4">'+g.title+'</div><div style="font-size:13px;font-weight:800;color:var(--red);margin-top:3px">¥'+g.price+'</div></div></div></div></div>';
     }
     return '<div class="bub'+(m.r?' r':'')+'"><div class="ava '+c.ac+'">'+c.ava+'</div><div class="btxt">'+m.t+'</div></div>';
   }).join('');
+  if(lastOwn>=0)html+='<div class="readtip">已读</div>';
+  $('#chatMsgs').innerHTML=html;
   go('s23-chat');
   $('#chatInput').textContent='';
 }
@@ -1155,6 +1287,7 @@ function sendMsg(){
   var inp=$('#chatInput');var t=(inp.textContent||'').trim();
   if(!t){toast('先输入内容再发送哦');return}
   var c=null;for(var i=0;i<CHATS.length;i++){if(CHATS[i].id===curChat)c=CHATS[i]}
+  var rt=$('#chatMsgs .readtip');if(rt)rt.remove();
   $('#chatMsgs').insertAdjacentHTML('beforeend','<div class="bub r"><div class="ava ab">🧑🏻‍💻</div><div class="btxt">'+t.replace(/</g,'&lt;')+'</div></div>');
   var nb=$('#chatMsgs').lastElementChild;
   if(nb)nb.style.animation='bubIn .4s cubic-bezier(.34,1.56,.64,1)';
@@ -1162,6 +1295,7 @@ function sendMsg(){
   $('#chatMsgs').lastElementChild.scrollIntoView({behavior:'smooth'});
   toast('已发送（敏感词机审通过）');
 }
+$('#chatInput').addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();sendMsg()}});
 var ST={10:['待付款','st-orange'],20:['已付款待交付','st-blue'],30:['已交付待确认','st-purple'],40:['已完成','st-green']};
 function renderOrders(f){
   var html='';
@@ -1387,7 +1521,7 @@ $$('#s06-publish .form-item .opt-chips .chip, #s19-postpub .opt-chips .chip, #s1
 /* 屏幕顶层子元素标记（入场交错） */
 $$('.app-screen').forEach(function(s){Array.prototype.forEach.call(s.children,function(ch){ch.classList.add('sti')})});
 /* 动态列表容器标记（子项交错浮现） */
-['feedList','marketGrid','orderList','chatList','kocList','auditList','courtList','cd-posts','uh-goods','uh-posts','confList','circleList','cfgList','billList','ticketList'].forEach(function(id){var el=document.getElementById(id);if(el)el.setAttribute('data-stag','1')});
+['feedList','marketGrid','orderList','chatList','kocList','auditList','courtList','cd-col1','cd-col2','hotCircles','discGrid','uh-goods','uh-posts','confList','cfgList','billList','ticketList'].forEach(function(id){var el=document.getElementById(id);if(el)el.setAttribute('data-stag','1')});
 /* 数字滚动 */
 function countUp(id,target,dec){
   var el=document.getElementById(id);if(!el)return;
